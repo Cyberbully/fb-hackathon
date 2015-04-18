@@ -34,6 +34,7 @@ var Toolbar = React.createClass({
   }
 });
 
+
 var Messages = React.createClass({
   render: function() {
     return (<div></div>);
@@ -111,8 +112,8 @@ var NewEventForm = React.createClass({
 
     var startDate = $('#startTimePicker').data("DateTimePicker").date();
     var endDate = $('#days').val();
-    
-    
+
+    var startTime = $('#beginTimePicker').data("DateTimePicker").time();
 
     if (!startDate || !endDate) {
       alert("Pleas enter a time for the start and the end");
@@ -122,6 +123,8 @@ var NewEventForm = React.createClass({
     var data = {
       event_id: $('#event').val().toString(),
       start_date: moment(startDate).unix().toString(),
+      start_time: moment(startTime).unix().toString(),
+      end_time: $('#hours').val().toString(),
       days: $('#days').val(),
       frequency: "60"
     }
@@ -181,6 +184,29 @@ var NewEventForm = React.createClass({
                     </div>
                   </div>
                 </div>
+                
+                <div className="row">
+                  <div className='col-md-6 col-sm-12'>
+                    <div className="form-group">
+                      <label htmlFor="beginTime">Start Time</label>
+                      <div className='input-group date' id='beginTimePicker'>
+                        <input type='text' id="beginTime" className="form-control" />
+                        <span className="input-group-addon">
+                          <span className="glyphicon glyphicon-calendar"></span>
+                        </span>
+
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className='col-md-6 col-sm-12'>
+                    <div className="form-group">
+                      <label htmlFor="hours">Hours</label>
+                      <input type='number' id="hours" className="form-control" defaultValue="8" />
+                    </div>
+                  </div>
+                </div>
+
                 <div className="row">
                   <div className="col-sm-12">
                   <button className="btn btn-primary pull-right" type="button" onClick={this.onClick}>Create Event</button>
@@ -201,10 +227,12 @@ var Pick = React.createClass({
   generateData: function() {
     var data = this.state.data;
     var start = moment.unix(data.event.start_date);
+    var start_time = moment.unix(data.event.start_time);
+
     console.log('start_date: ' + data.event.start_date);
     console.log('start date thru moment.unix: ' + start.format("YYYY MM DD HH"));
     var table = {
-      start_hour: 9,
+      start_hour: start_time,
       hours: 8,
       start_day: start,
       entries: data.event.entries,
