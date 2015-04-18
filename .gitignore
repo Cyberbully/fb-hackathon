@@ -1,6 +1,6 @@
 bower_components
 node_modules
-composer*
+*/composer.phar
 *.swp
 timeforhoh/index.yaml
 
@@ -62,4 +62,3 @@ docs/_build/
 # PyBuilder
 target/
 
-app/composer*
