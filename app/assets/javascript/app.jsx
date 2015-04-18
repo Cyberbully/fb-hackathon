@@ -25,7 +25,7 @@ var Toolbar = React.createClass({
               <span className="icon-bar"></span>
               <span className="icon-bar"></span>
             </button>
-            <a href="#" className="navbar-brand">Time for Hoh Won</a>
+            <a href="" className="navbar-brand">Time for Hoh Won</a>
           </div>
           <div id="navbar" className="navbar-collapse collapse">
             <ul className="nav navbar-nav">
