@@ -23,9 +23,7 @@ var Toolbar = React.createClass({displayName: "Toolbar",
           ), 
           React.createElement("div", {id: "navbar", className: "navbar-collapse collapse"}, 
             React.createElement("ul", {className: "nav navbar-nav"}, 
-            /*<li><Link to="app">Home</Link></li>
-              <li><Link to="new">New</Link></li>*/
-              React.createElement("li", null, React.createElement(Link, {to: "new"}, "Time for Hoh Wan"))
+              React.createElement("li", null, React.createElement(Link, {to: "app"}, "Time for Hoh Wan"))
             ), 
 
             React.createElement("ul", {className: "nav navbar-nav navbar-right"}, 
@@ -312,7 +310,7 @@ var EventPickTable = React.createClass({displayName: "EventPickTable",
 var EventPickHeaderRow = React.createClass({displayName: "EventPickHeaderRow",
   render: function() {
     var cells = [];
-    for (var i=0;i<=this.props.table.days;i++) {
+    for (var i=0;i<this.props.table.days;i++) {
       var day = this.props.table.start_day;
       var day2 = moment(day).add(i, 'days').format("ddd D MMM");
       cells.push(React.createElement("th", {key: i}, day2))
@@ -335,7 +333,7 @@ var EventPickRow = React.createClass({displayName: "EventPickRow",
   },
   render: function() {
     var cells = [];
-    for (var i=0;i<=this.props.table.days;i++) {
+    for (var i=0;i<this.props.table.days;i++) {
       var day = this.props.table.start_day;
       var day2 = moment(day).add(i, 'days');
 
@@ -385,9 +383,8 @@ var Dashboard = React.createClass({displayName: "Dashboard",
 
 var routes = (
   React.createElement(Route, {name: "app", path: "/", handler: App}, 
-    React.createElement(Route, {name: "new", app: App, handler: New}), 
     React.createElement(Route, {name: "pick", app: App, handler: Pick}), 
-    React.createElement(DefaultRoute, {handler: Dashboard})
+    React.createElement(DefaultRoute, {handler: New})
   )
 );
 //
