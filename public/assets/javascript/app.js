@@ -25,13 +25,13 @@ var Toolbar = React.createClass({displayName: "Toolbar",
               React.createElement("span", {className: "icon-bar"}), 
               React.createElement("span", {className: "icon-bar"})
             ), 
-            React.createElement("a", {href: "", className: "navbar-brand"}, "Time for Hoh Won")
+            React.createElement("a", {href: "javascript: void(0)", className: "navbar-brand"}, "Time for Hoh Won")
           ), 
           React.createElement("div", {id: "navbar", className: "navbar-collapse collapse"}, 
             React.createElement("ul", {className: "nav navbar-nav"}, 
               React.createElement("li", null, React.createElement("a", {href: "#"}, "New Event")), 
               React.createElement("li", {class: "dropdown"}, 
-                React.createElement("a", {href: "#", className: "dropdown-toggle", "data-toggle": "dropdown", role: "button"}, "Your Events ", React.createElement("span", {className: "caret"})), 
+                React.createElement("a", {href: "#/", className: "dropdown-toggle", "data-toggle": "dropdown", role: "button"}, "Your Events ", React.createElement("span", {className: "caret"})), 
                 React.createElement("ul", {className: "dropdown-menu", role: "menu"}, 
                   existing_events
                 )

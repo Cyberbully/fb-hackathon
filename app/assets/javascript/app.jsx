@@ -25,13 +25,13 @@ var Toolbar = React.createClass({
               <span className="icon-bar"></span>
               <span className="icon-bar"></span>
             </button>
-            <a href="" className="navbar-brand">Time for Hoh Won</a>
+            <a href="javascript: void(0)" className="navbar-brand">Time for Hoh Won</a>
           </div>
           <div id="navbar" className="navbar-collapse collapse">
             <ul className="nav navbar-nav">
               <li><a href='#'>New Event</a></li>
               <li class="dropdown">
-                <a href="#" className="dropdown-toggle" data-toggle="dropdown" role="button">Your Events <span className="caret"></span></a>
+                <a href="#/" className="dropdown-toggle" data-toggle="dropdown" role="button">Your Events <span className="caret"></span></a>
                 <ul className="dropdown-menu" role="menu">
                   {existing_events}
                 </ul>
