@@ -25,7 +25,7 @@ var Toolbar = React.createClass({
             <ul className="nav navbar-nav">
             {/*<li><Link to="app">Home</Link></li>
               <li><Link to="new">New</Link></li>*/}
-              <li><Link to="pick">Pick</Link></li>
+              <li><Link to="new">Time for Hoh Wan</Link></li>
             </ul>
 
             <ul className="nav navbar-nav navbar-right">
@@ -112,6 +112,7 @@ var NewEventForm = React.createClass({
     router: React.PropTypes.func
   },
   onClick: function() {
+
     var startDate = $('#startTimePicker').data("DateTimePicker").date();
     var endDate = $('#days').val();
     if(!startDate || !endDate) {
@@ -176,18 +177,10 @@ var NewEventForm = React.createClass({
                   <div className='col-md-4 col-sm-12'>
                     <div className="form-group">
                       <label htmlFor="days">Days</label>
-                      <input type='number' id="days" className="form-control" value="5" />
+                      <input type='number' id="days" className="form-control" defaultValue="5" />
                     </div>
                   </div>
                 </div>
-                {/*}<div className="row">
-                  <div className='col-sm-12'>
-                    <div className="form-group">
-                      <label htmlFor="timeslots">Timeslot Duration (minutes)</label>
-                      <input type='number' id="timeslots" className="form-control" value="60" disabled/>
-                    </div>
-                  </div>
-                </div>*/}
                 <div className="row">
                   <div className="col-sm-12">
                   <button className="btn btn-primary pull-right" type="button" onClick={this.onClick}>Create Event</button>
@@ -242,6 +235,7 @@ var Pick = React.createClass({
     ajaxDo('POST', '/event/' + this.state.id + '/preference', JSON.stringify({"preferences":merged}),
           function(data) {
             console.log(data);
+            $("#saveTable").html("Save Preferences").attr('disabled', false);
           },
           function(xhr, status, error) {
             console.log(error);
@@ -265,6 +259,7 @@ var Pick = React.createClass({
 
 var EventPickBox = React.createClass({
   onClick: function() {
+    $("#saveTable").attr('disabled', true).html("Saving");
     this.props.sendData(this.refs['table'].generateData());
   },
   render: function() {
@@ -273,7 +268,7 @@ var EventPickBox = React.createClass({
           <EventPickTable ref="table" table={this.props.table} user={this.props.user} />
           <div className="row">
             <div className="col-sm-12">
-              <button className="btn btn-primary pull-right" type="button" onClick={this.onClick}>Save Preferences</button>
+              <button className="btn btn-primary pull-right" id="saveTable" type="button" onClick={this.onClick}>Save Preferences</button>
             </div>
           </div>
         </div>
@@ -319,7 +314,7 @@ var EventPickHeaderRow = React.createClass({
     var cells = [];
     for (var i=0;i<=this.props.table.days;i++) {
       var day = this.props.table.start_day;
-      var day2 = moment(day).add(i, 'days').format("ddd D MMM YYYY");
+      var day2 = moment(day).add(i, 'days').format("ddd D MMM");
       cells.push(<th key={i}>{day2}</th>)
     }
     return <tr>{cells}</tr>
@@ -363,15 +358,14 @@ var EventPickCell = React.createClass({
     if(Object.keys(this.props.user).length > 0) {
       var entries = this.props.table.entries[this.props.user.id];
       var thistime = moment(this.props.day).add(this.props.row_index+this.props.table.start_hour, 'hours').unix();
-      console.log(entries[0]);
-      console.log(entries[0] - thistime);
       if(entries && entries.indexOf(thistime) > -1) {
         highlighted = 'highlighted';
         console.log("true");
       }
     }
     return <td className={highlighted} id={'cell' + this.props.row_index + 'x' + this.props.index}>{this.props.row_index + this.props.table.start_hour}</td>
-  }});
+    }
+});
 
 
 
