@@ -36,7 +36,8 @@ $app->post('/api/create', function() use ($app) {
 $app->get('/api/event/:event_id', function($event_id) {
     $query = new ParseQuery('Event');
     try {
-        $event = $query->get($event_id);
+        $query->equalTo("event_id", $event_id);
+        $event = $query->first();
     } catch (ParseException $ex) {
         echo json_encode(array('ok' => false, 'error' => $ex->getMessage()));
         return;
