@@ -6,6 +6,14 @@ var RouteHandler = Router.RouteHandler;
 
 var Toolbar = React.createClass({displayName: "Toolbar",
   render: function() {
+    var existing_events;
+
+    if (Object.keys(this.props.user).length != 0) {
+      existing_events = this.props.user.existing_events.map(function(event, index) {
+        return React.createElement("li", {key: index}, React.createElement("a", {href: "#pick?event=" + event.id}, event.name));
+      });
+    }
+
     return (
 
       React.createElement("div", {className: "navbar navbar-blue navbar-fixed-top"}, 
@@ -16,11 +24,18 @@ var Toolbar = React.createClass({displayName: "Toolbar",
               React.createElement("span", {className: "icon-bar"}), 
               React.createElement("span", {className: "icon-bar"}), 
               React.createElement("span", {className: "icon-bar"})
-            )
+            ), 
+            React.createElement("a", {href: "", className: "navbar-brand"}, "Time for Hoh Won")
           ), 
           React.createElement("div", {id: "navbar", className: "navbar-collapse collapse"}, 
             React.createElement("ul", {className: "nav navbar-nav"}, 
-              React.createElement("li", null, React.createElement("a", {href: "#"}, "Time for Hoh Won"))
+              React.createElement("li", null, React.createElement("a", {href: "#"}, "New Event")), 
+              React.createElement("li", {class: "dropdown"}, 
+                React.createElement("a", {href: "#", className: "dropdown-toggle", "data-toggle": "dropdown", role: "button"}, "Your Events ", React.createElement("span", {className: "caret"})), 
+                React.createElement("ul", {className: "dropdown-menu", role: "menu"}, 
+                  existing_events
+                )
+              )
             ), 
 
             React.createElement("ul", {className: "nav navbar-nav navbar-right"}, 

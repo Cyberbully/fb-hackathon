@@ -6,6 +6,14 @@ var RouteHandler = Router.RouteHandler;
 
 var Toolbar = React.createClass({
   render: function() {
+    var existing_events;
+
+    if (Object.keys(this.props.user).length != 0) {
+      existing_events = this.props.user.existing_events.map(function(event, index) {
+        return <li key={index}><a href={"#pick?event=" + event.id}>{event.name}</a></li>;
+      });
+    }
+
     return (
 
       <div className="navbar navbar-blue navbar-fixed-top">
@@ -21,7 +29,13 @@ var Toolbar = React.createClass({
           </div>
           <div id="navbar" className="navbar-collapse collapse">
             <ul className="nav navbar-nav">
-              <li><a href='#'>Time for Hoh Won</a></li>
+              <li><a href='#'>New Event</a></li>
+              <li class="dropdown">
+                <a href="#" className="dropdown-toggle" data-toggle="dropdown" role="button">Your Events <span className="caret"></span></a>
+                <ul className="dropdown-menu" role="menu">
+                  {existing_events}
+                </ul>
+              </li>
             </ul>
 
             <ul className="nav navbar-nav navbar-right">
