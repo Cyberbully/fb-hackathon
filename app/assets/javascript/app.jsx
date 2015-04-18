@@ -20,7 +20,7 @@ var Toolbar = React.createClass({
           </div>
           <div id="navbar" className="navbar-collapse collapse">
             <ul className="nav navbar-nav">
-              <li><Link to="app">Time for Hoh Won</Link></li>
+              <li><a href='#'>Time for Hoh Won</a></li>
             </ul>
 
             <ul className="nav navbar-nav navbar-right">
@@ -184,7 +184,7 @@ var NewEventForm = React.createClass({
                 </div>
                 
                 <div className="row">
-                  <div className='col-md-6 col-sm-12'>
+                  <div className='col-md-8 col-sm-12'>
                     <div className="form-group">
                       <label htmlFor="beginTime">Start Time</label>
                       <div className='input-group date' id='beginTimePicker'>
@@ -197,7 +197,7 @@ var NewEventForm = React.createClass({
                     </div>
                   </div>
 
-                  <div className='col-md-6 col-sm-12'>
+                  <div className='col-md-4 col-sm-12'>
                     <div className="form-group">
                       <label htmlFor="hours">Hours</label>
                       <input type='number' id="hours" className="form-control" defaultValue="8" />

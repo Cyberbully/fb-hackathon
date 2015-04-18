@@ -20,7 +20,7 @@ var Toolbar = React.createClass({displayName: "Toolbar",
           ), 
           React.createElement("div", {id: "navbar", className: "navbar-collapse collapse"}, 
             React.createElement("ul", {className: "nav navbar-nav"}, 
-              React.createElement("li", null, React.createElement(Link, {to: "app"}, "Time for Hoh Won"))
+              React.createElement("li", null, React.createElement("a", {href: "#"}, "Time for Hoh Won"))
             ), 
 
             React.createElement("ul", {className: "nav navbar-nav navbar-right"}, 
@@ -184,7 +184,7 @@ var NewEventForm = React.createClass({displayName: "NewEventForm",
                 ), 
                 
                 React.createElement("div", {className: "row"}, 
-                  React.createElement("div", {className: "col-md-6 col-sm-12"}, 
+                  React.createElement("div", {className: "col-md-8 col-sm-12"}, 
                     React.createElement("div", {className: "form-group"}, 
                       React.createElement("label", {htmlFor: "beginTime"}, "Start Time"), 
                       React.createElement("div", {className: "input-group date", id: "beginTimePicker"}, 
@@ -197,7 +197,7 @@ var NewEventForm = React.createClass({displayName: "NewEventForm",
                     )
                   ), 
 
-                  React.createElement("div", {className: "col-md-6 col-sm-12"}, 
+                  React.createElement("div", {className: "col-md-4 col-sm-12"}, 
                     React.createElement("div", {className: "form-group"}, 
                       React.createElement("label", {htmlFor: "hours"}, "Hours"), 
                       React.createElement("input", {type: "number", id: "hours", className: "form-control", defaultValue: "8"})
