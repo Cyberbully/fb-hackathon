@@ -319,8 +319,7 @@ var EventPickHeaderRow = React.createClass({
     var cells = [];
     for (var i=0;i<=this.props.table.days;i++) {
       var day = this.props.table.start_day;
-      var day2 = day.add(i, 'days').format("ddd D MMM");
-      console.log(i, day);
+      var day2 = moment(day).add(i, 'days').format("ddd D MMM YYYY");
       cells.push(<th key={i}>{day2}</th>)
     }
     return <tr>{cells}</tr>
@@ -329,8 +328,6 @@ var EventPickHeaderRow = React.createClass({
 
 
 var EventPickRow = React.createClass({ 
-  
-  
   generateData: function() {
       var data = [];
       for (var item in this.refs) {
@@ -345,7 +342,7 @@ var EventPickRow = React.createClass({
     var cells = [];
     for (var i=0;i<=this.props.table.days;i++) {
       var day = this.props.table.start_day;
-      var day2 = day.add(i, 'days');
+      var day2 = moment(day).add(i, 'days');
 
       cells.push(<EventPickCell ref={"cell" + i} index={i} row_index={this.props.row_index} day={day2} key={i} table={this.props.table} user={this.props.user} />)
     }
