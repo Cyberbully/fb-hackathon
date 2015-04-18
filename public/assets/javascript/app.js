@@ -5,8 +5,6 @@ var Route = Router.Route;
 var RouteHandler = Router.RouteHandler;
 
 
-
-
 var Toolbar = React.createClass({displayName: "Toolbar",
   render: function() {
     return (
@@ -23,12 +21,12 @@ var Toolbar = React.createClass({displayName: "Toolbar",
           ), 
           React.createElement("div", {id: "navbar", className: "navbar-collapse collapse"}, 
             React.createElement("ul", {className: "nav navbar-nav"}, 
-              React.createElement("li", null, React.createElement(Link, {to: "app"}, "Time for Hoh Wan"))
+              React.createElement("li", null, React.createElement(Link, {to: "app"}, "Time for Hoh Won"))
             ), 
 
             React.createElement("ul", {className: "nav navbar-nav navbar-right"}, 
-								  React.createElement("li", null, React.createElement("a", {href: ""}, React.createElement("img", {src: this.props.user.profile}), " ", this.props.user.name))
-							)
+			    React.createElement("li", null, React.createElement("a", {href: ""}, React.createElement("img", {src: this.props.user.profile}), " ", this.props.user.name))
+			)
           )
         )
       )
@@ -113,8 +111,11 @@ var NewEventForm = React.createClass({displayName: "NewEventForm",
 
     var startDate = $('#startTimePicker').data("DateTimePicker").date();
     var endDate = $('#days').val();
-    if(!startDate || !endDate) {
-      alert("Pleas enter a time for the start and the end");
+    
+    
+
+    if (!startDate || !endDate) {
+      alert("Please enter a time for the start and the end");
       return false;
     }
 
@@ -125,14 +126,15 @@ var NewEventForm = React.createClass({displayName: "NewEventForm",
       frequency: "60"
     }
     var self = this;
-   ajaxDo('POST', '/create', JSON.stringify(data),
-    function(data) {
-        alert("Done!");
-        self.context.router.transitionTo('/pick?event='+data.event_id)
-      },
-      function(xhr, status, err) {
-        console.error(status, err);
-      }
+    
+    ajaxDo('POST', '/create', JSON.stringify(data),
+        function(data) {
+            alert("Done!");
+            self.context.router.transitionTo('/pick?event='+data.event_id)
+        },
+        function(xhr, status, err) {
+            console.error(status, err);
+        }
     );
   },
   render: function () {
