@@ -15,7 +15,7 @@ use Facebook\GraphObject;
 session_start();
 
 // login helper with redirect_uri
-$helper = new FacebookRedirectLoginHelper($LOGIN_URL);
+$helper = new FacebookRedirectLoginHelper($GLOBALS["LOGIN_URL"]);
 
 $session = getSession();
 if (!$session) {

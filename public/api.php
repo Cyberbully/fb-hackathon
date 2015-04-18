@@ -66,11 +66,11 @@ $app->post('/api/create', function() use ($app) {
         'POST',
         '/' . $data['event_id'] . '/feed',
         array (
-            'message' => "Greetings, friends! Let's find the best time for our event, indicate your preferred times here",
-            /*'link' => $EVENT_BASE_URL . $data['event_id'],
-            'name' => 'Time for Hoh Won',
-            'description' => 'Choose which times are best for you',
-            'picture' => 'http://a4.urbancdn.com/w/s/Ob/1PMs50OPsKTpK4.jpg',*/
+            'message' => $GLOBALS["CREATE_MESSAGE"],
+            'link' => $GLOBALS["EVENT_BASE_URL"] . $data['event_id'],
+            'name' => $GLOBALS["POST_NAME"],
+            'description' => $GLOBALS["POST_DESC"],
+            'picture' => 'http://a4.urbancdn.com/w/s/Ob/1PMs50OPsKTpK4.jpg',
         )
     );
     //$graphObject = $response->getGraphObject();
@@ -237,20 +237,6 @@ $app->post('/api/event/:event_id/preference', function($event_id) use ($app) {
 
     $people_count = count($entries);
 
-    /*
-    $best_times = array();
-    $max_count = 0;
-
-    foreach ($times as $time => $count) {
-        if ($count == $max_count) {
-            array_push($best_times, $time);
-        } else if ($count > $max_count) {
-            $best_times = array( $time );
-            $max_count = $count;
-        }
-    }
-    */
-
     $grouped_times = array();
     $current_group = array();
     $current_count = 0;
@@ -297,6 +283,9 @@ $app->post('/api/event/:event_id/preference', function($event_id) use ($app) {
         '/' . $event_id . '/feed',
         array (
             'message' => $msg,
+            'link' => $GLOBALS["EVENT_BASE_URL"] . $event_id,
+            'name' => $GLOBALS["POST_NAME"],
+            'description' => $GLOBALS["POST_DESC"],
         )
     );
 
@@ -304,6 +293,9 @@ $app->post('/api/event/:event_id/preference', function($event_id) use ($app) {
         $response = $request->execute();
         $event->save();
     } catch (ParseException $ex) {
+        echo json_encode(array('ok' => false, 'error' => $ex->getMessage()));
+        return;
+    } catch (FacebookServerException $ex) {
         echo json_encode(array('ok' => false, 'error' => $ex->getMessage()));
         return;
     }
