@@ -214,30 +214,6 @@ $app->post('/api/event/:event_id/preference', function($event_id) use ($app) {
     echo json_encode(array('ok' => true));
 });
 
-$app->post('/api/create2', function() use ($app) {
-    $data = json_decode($app->request()->getBody(), true);
-
-    $eventID = $data['event_id'];
-
-    session_start();
-    $session = getSession();
-    if (!$session) {
-        echo "no session 4 u";
-        return;
-    }
-
-    $request = new FacebookRequest(
-        $session,
-        'POST',
-        '/' . $eventID . '/feed',
-        array (
-            'message' => 'here is a test message',
-        )
-    );
-    $response = $request->execute();
-    $graphObject = $response->getGraphObject();
-});
-
 $app->run();
 
 ?>
