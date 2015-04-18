@@ -15,7 +15,7 @@ use Facebook\GraphObject;
 session_start();
 
 // login helper with redirect_uri
-$helper = new FacebookRedirectLoginHelper('http://localhost/public/index.php');
+$helper = new FacebookRedirectLoginHelper('http://localhost/fb-hackathon/app/index.php');
 
 try {
   $session = $helper->getSessionFromRedirect();
