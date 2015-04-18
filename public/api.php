@@ -53,6 +53,19 @@ $app->get('/api/event/:event_id', function($event_id) {
     ))); 
 });
 
+$app->post('/api/event/:event_id/preference', function($event_id) {
+    $query = new ParseQuery('Event');
+    try {
+        $query->equalTo("event_id", $event_id);
+        $event = $query->first();
+    } catch (ParseException $ex) {
+        echo json_encode(array('ok' => false, 'error' => $ex->getMessage()));
+        return;
+    }
+    
+    
+});
+
 $app->run();
 
 ?>
