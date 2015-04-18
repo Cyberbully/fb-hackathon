@@ -2,10 +2,9 @@
 @import (inline) "styles.css";
 @import (inline) "../lib/eonasdan-bootstrap-datetimepicker/build/css/bootstrap-datetimepicker.min.css";
 
-
-.content {
-  padding-top: 90px;
-}
+  .content {
+    padding-top: 90px;
+  }
 
 .nav img {
   height:20px;
@@ -19,3 +18,25 @@
 table td, table th {
   background: white;
 }
+
+
+
+
+#selectText {
+  padding-top: 10px;
+}
+
+.colorSquare {
+  height: 22px;
+  width: 22px;
+  background: #fff;
+  border: 3px solid #eee;
+}
+
+.loopingClass (@index) when (@index > 0){
+  .attend_@{index}{
+    background: hsl(@index, 80%, 60%);
+  }
+  .loopingClass(@index - 1);
+}
+.loopingClass(100);

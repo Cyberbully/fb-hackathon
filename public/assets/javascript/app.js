@@ -127,7 +127,6 @@ var NewEventForm = React.createClass({displayName: "NewEventForm",
     var self = this;
    ajaxDo('POST', '/create', JSON.stringify(data),
     function(data) {
-        alert("Done!");
         self.context.router.transitionTo('/pick?event='+data.event_id)
       },
       function(xhr, status, err) {
@@ -199,13 +198,16 @@ var Pick = React.createClass({displayName: "Pick",
   generateData: function() {
     var data = this.state.data;
     var start = moment.unix(data.event.start_date);
-    console.log('start_date: ' + data.event.start_date);
-    console.log('start date thru moment.unix: ' + start.format("YYYY MM DD HH"));
     var table = {
       start_hour: 9,
       hours: 8,
       start_day: start,
       entries: data.event.entries,
+      name: data.event.name,
+      owner: data.event.owner,
+      cover: data.event.cover,
+      location: data.location,
+      id_to_name: data.event.id_to_name,
       days: parseInt(data.event.days)
     };
     this.setState({table:table})
@@ -219,7 +221,6 @@ var Pick = React.createClass({displayName: "Pick",
       function(data) {
         self.setState({data:data});
         self.generateData();
-        console.log(data);
       },
       function(xhr, status, error) {
         
@@ -229,10 +230,8 @@ var Pick = React.createClass({displayName: "Pick",
   sendData: function(data) {
     var merged = [];
     merged = merged.concat.apply(merged, data);
-    console.log(merged);
     ajaxDo('POST', '/event/' + this.state.id + '/preference', JSON.stringify({"preferences":merged}),
           function(data) {
-            console.log(data);
             $("#saveTable").html("Save Preferences").attr('disabled', false);
           },
           function(xhr, status, error) {
@@ -263,9 +262,16 @@ var EventPickBox = React.createClass({displayName: "EventPickBox",
   render: function() {
       return (
         React.createElement("div", {className: "well clearfix"}, 
+          React.createElement("div", {className: "row"}, 
+            React.createElement("div", {className: "col-sm-12"}, 
+              React.createElement("h1", null, this.props.table.name, " ", React.createElement("small", null, "by ", this.props.table.owner))
+            )
+          ), 
+          React.createElement("br", null), 
           React.createElement(EventPickTable, {ref: "table", table: this.props.table, user: this.props.user}), 
           React.createElement("div", {className: "row"}, 
             React.createElement("div", {className: "col-sm-12"}, 
+              React.createElement("div", {className: "pull-left", id: "selectText"}, "Select the times that you are available by clicking or dragging on the table."), 
               React.createElement("button", {className: "btn btn-primary pull-right", id: "saveTable", type: "button", onClick: this.onClick}, "Save Preferences")
             )
           )
@@ -353,33 +359,48 @@ var EventPickCell = React.createClass({displayName: "EventPickCell",
   },
   render: function() {
     var highlighted = '';
+    var thistime = moment(this.props.day).add(this.props.row_index+this.props.table.start_hour, 'hours').unix();
     if(Object.keys(this.props.user).length > 0) {
       var entries = this.props.table.entries[this.props.user.id];
-      var thistime = moment(this.props.day).add(this.props.row_index+this.props.table.start_hour, 'hours').unix();
       if(entries && entries.indexOf(thistime) > -1) {
         highlighted = 'highlighted';
-        console.log("true");
       }
     }
-    return React.createElement("td", {className: highlighted, id: 'cell' + this.props.row_index + 'x' + this.props.index}, this.props.row_index + this.props.table.start_hour)
+    return React.createElement("td", {className: highlighted, id: 'cell' + this.props.row_index + 'x' + this.props.index}, this.props.row_index + this.props.table.start_hour, React.createElement(ColorSquare, {time: thistime, id_to_name: this.props.table.id_to_name, entries: this.props.table.entries}))
     }
 });
 
-
-
-
-var Dashboard = React.createClass({displayName: "Dashboard",
-  render: function () {
-    return (
-      React.createElement("div", null, 
-        React.createElement(Toolbar, {user: this.props.user}), 
-        React.createElement("div", {className: "content"}, 
-          React.createElement(Messages, null)
-        )
-      )
-    );
+var ColorSquare = React.createClass({displayName: "ColorSquare",
+  componentDidMount: function() {
+    $('.colorSquare').popover({
+      placement: 'left'
+    });
+  },
+  render: function() {
+    var total = 0;
+    var picked = 0;
+    var attendingUsers = '<ul class="list-group">';
+    var entries = this.props.entries;
+    var self = this;
+    for (var key in entries) {
+      if(entries[key] && entries[key].indexOf(self.props.time) > -1) {
+        picked++;
+        attendingUsers = attendingUsers + '<li class="list-group-item">'+ this.props.id_to_name[key] + '</li>';
+      }
+      total++;
+    }
+    
+    var percentage = Math.round((picked/total) * 100);
+    var classes = "colorSquare pull-right attend_" + percentage;
+    if (attendingUsers == '<ul class="list-group">') {
+      attendingUsers = "No one yet :(";
+    } else {
+      attendingUsers = attendingUsers + '<ul/>';
+    }
+    return React.createElement("div", {role: "button", className: classes, "data-toggle": "popover", "data-trigger": "hover", title: percentage + '% can make it!', "data-html": "true", "data-content": attendingUsers})
   }
-});
+})
+
 
 var routes = (
   React.createElement(Route, {name: "app", path: "/", handler: App}, 

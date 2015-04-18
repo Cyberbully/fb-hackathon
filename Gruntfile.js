@@ -31,7 +31,8 @@ module.exports = function(grunt) {
       dist: {
         src: [
           'app/assets/lib/react/react-with-addons.js',
-          'app/assets/lib/react-router/build/global/ReactRouter.js'
+          'app/assets/lib/react-router/build/global/ReactRouter.js',
+          'app/assets/lib/bootstrap/dist/js/bootstrap.min.js'
         ],
         dest: 'public/assets/javascript/react.js',
       },

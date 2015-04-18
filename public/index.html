@@ -38,7 +38,6 @@ $('#startTimePicker').datetimepicker({
         isSelected = $(this).hasClass("highlighted");
         isMouseDown = true;
         $(this).toggleClass("highlighted");
-        return false;
       }).on('mouseover', '#timePicker td', function(event) {
         if (isMouseDown) {
           if (isSelected) {
@@ -51,7 +50,7 @@ $('#startTimePicker').datetimepicker({
         isMouseDown = false;
       });
 
-
+  
     </script>
   </body>
 </html>
