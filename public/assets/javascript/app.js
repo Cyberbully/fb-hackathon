@@ -104,6 +104,7 @@ function ajaxDo(method, endpoint, data, success, error) {
   });
 }
 
+
 var NewEventForm = React.createClass({displayName: "NewEventForm",
   contextTypes: {
     router: React.PropTypes.func
@@ -112,8 +113,7 @@ var NewEventForm = React.createClass({displayName: "NewEventForm",
 
     var startDate = $('#startTimePicker').data("DateTimePicker").date();
     var endDate = $('#days').val();
-
-    var startTime = $('#beginTimePicker').data("DateTimePicker").time();
+    var startTime = $('#beginTimePicker').data("DateTimePicker").date();
 
     if (!startDate || !endDate) {
       alert("Pleas enter a time for the start and the end");
@@ -227,12 +227,11 @@ var Pick = React.createClass({displayName: "Pick",
   generateData: function() {
     var data = this.state.data;
     var start = moment.unix(data.event.start_date);
-    var start_time = moment.unix(data.event.start_time);
 
     console.log('start_date: ' + data.event.start_date);
     console.log('start date thru moment.unix: ' + start.format("YYYY MM DD HH"));
     var table = {
-      start_hour: start_time.get('hour'),
+      start_hour: moment.unix(data.event.start_time).get('hour'),
       hours: parseInt(data.event.end_time),
       start_day: start,
       entries: data.event.entries,
@@ -315,7 +314,7 @@ var EventPickTable = React.createClass({displayName: "EventPickTable",
     },
     render: function() {
       var rows = [];
-      for (var i=0;i<=this.props.table.hours;i++) {
+      for (var i=0;i<this.props.table.hours;i++) {
         rows.push(React.createElement(EventPickRow, {ref: 'row' + i, row_index: i, key: i, table: this.props.table, user: this.props.user}))
       }
 
