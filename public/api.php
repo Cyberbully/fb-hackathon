@@ -138,7 +138,7 @@ $app->get('/api/details', function() {
 
         $event_array = [];
         foreach ($events->data as $event) {
-            $event_array[$event->id] = $event->name; 
+            array_push($event_array, array("id" => $event->id, "name" => $event->name));
         }
     } catch (FacebookRequestException $ex) {
         echo json_encode(array('ok' => false, 'error' => $ex->getMessage()));
