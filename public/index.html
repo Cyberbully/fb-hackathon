@@ -20,22 +20,10 @@
   </head>
   <body>
     <div class="container" id="container"></div>
-    <script src="assets/javascript/app.js"></script>
     <script src="assets/javascript/moment.min.js"></script>
     <script src="assets/javascript/bootstrap-datetimepicker.min.js"></script>
+    <script src="assets/javascript/app.js"></script>
     <script type="text/javascript">
-      $(function () {
-          $('#startTimePicker').datetimepicker({
-            defaultDate: new Date(),
-            format: 'DD/MM/YYYY'
-          });
-        }); 
-      $(function () {
-          $('#beginTimePicker').datetimepicker({
-            defaultDate: new Date(1970, 0, 0, 9, 0, 0, 0),
-            format: 'LT'
-          });
-      });
       var isMouseDown = false;
       var isSelected;
       $('body').on('mousedown', "#timePicker td", function(event) {

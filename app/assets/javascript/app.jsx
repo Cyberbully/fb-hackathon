@@ -24,8 +24,8 @@ var Toolbar = React.createClass({
             </ul>
 
             <ul className="nav navbar-nav navbar-right">
-			    <li><a href=""><img src={this.props.user.profile} /> {this.props.user.name}</a></li>
-			</ul>
+              <li><a href=""><img src={this.props.user.profile} /> {this.props.user.name}</a></li>
+            </ul>
           </div>
         </div>
       </div>
@@ -137,6 +137,16 @@ var NewEventForm = React.createClass({
             console.error(status, err);
         }
     );
+  },
+  componentDidMount: function() {
+    $('#startTimePicker').datetimepicker({
+      defaultDate: new Date(),
+      format: 'DD/MM/YYYY'
+    });
+    $('#beginTimePicker').datetimepicker({
+      defaultDate: new Date(1970, 0, 0, 9, 0, 0, 0),
+      format: 'LT'
+    });
   },
   render: function () {
     var events;
