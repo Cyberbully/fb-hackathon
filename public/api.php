@@ -277,7 +277,7 @@ $app->post('/api/event/:event_id/preference', function($event_id) use ($app) {
 
     $msg = join("\n\n", $update_msgs);
 
-    $request = new FacebookRequest(
+    $post_request = new FacebookRequest(
         $session,
         'POST',
         '/' . $event_id . '/feed',
@@ -290,8 +290,6 @@ $app->post('/api/event/:event_id/preference', function($event_id) use ($app) {
     );
 
     try {
-        $response = $request->execute();
-
         // TODO: pagination
         $request = new FacebookRequest(
             $session,
@@ -317,6 +315,7 @@ $app->post('/api/event/:event_id/preference', function($event_id) use ($app) {
             $graphObject = $responseMaybe->getGraphObject();
         }
 
+        $response = $post_request->execute();
         $event->save();
     } catch (ParseException $ex) {
         echo json_encode(array('ok' => false, 'error' => $ex->getMessage()));
