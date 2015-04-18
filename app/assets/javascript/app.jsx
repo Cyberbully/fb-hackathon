@@ -231,6 +231,7 @@ var Pick = React.createClass({
       start_day: start,
       entries: data.event.entries,
       name: data.event.name,
+      event_id: data.event.event_id,
       owner: data.event.owner,
       cover: data.event.cover,
       location: data.location,
@@ -291,7 +292,7 @@ var EventPickBox = React.createClass({
         <div className="well clearfix">
           <div className="row">
             <div className="col-sm-12">
-              <h1>{this.props.table.name} <small>by {this.props.table.owner}</small></h1>
+              <h1><a href={"https://www.facebook.com/events/" + this.props.table.event_id} target="_blank">{this.props.table.name}</a> <small>by {this.props.table.owner}</small></h1>
             </div>
           </div>
           <br />

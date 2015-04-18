@@ -231,6 +231,7 @@ var Pick = React.createClass({displayName: "Pick",
       start_day: start,
       entries: data.event.entries,
       name: data.event.name,
+      event_id: data.event.event_id,
       owner: data.event.owner,
       cover: data.event.cover,
       location: data.location,
@@ -291,7 +292,7 @@ var EventPickBox = React.createClass({displayName: "EventPickBox",
         React.createElement("div", {className: "well clearfix"}, 
           React.createElement("div", {className: "row"}, 
             React.createElement("div", {className: "col-sm-12"}, 
-              React.createElement("h1", null, this.props.table.name, " ", React.createElement("small", null, "by ", this.props.table.owner))
+              React.createElement("h1", null, React.createElement("a", {href: "https://www.facebook.com/events/" + this.props.table.event_id, target: "_blank"}, this.props.table.name), " ", React.createElement("small", null, "by ", this.props.table.owner))
             )
           ), 
           React.createElement("br", null), 
