@@ -15,7 +15,7 @@ use Facebook\GraphObject;
 session_start();
 
 // login helper with redirect_uri
-$helper = new FacebookRedirectLoginHelper('http://fb.jcaw.me/fb/app');
+$helper = new FacebookRedirectLoginHelper('http://fb.jcaw.me/fb/public/index.php');
 
 try {
   $session = $helper->getSessionFromRedirect();
@@ -35,10 +35,11 @@ if (isset($session)) {
 
   // print data
   echo '<pre>' . print_r( $graphObject, 1 ) . '</pre>';
+
+  $_SESSION["fb-auth"] = $session->getToken();
 } else {
   // show login url
   echo '<a href="' . $helper->getLoginUrl() . '">Login</a>';
 }
 
-$_SESSION["fb-auth"] = $session->getToken();
-?>i
+?>
