@@ -27,7 +27,6 @@ if (!$session) {
 
     if ($session) {
         $_SESSION["fb-auth"] = $session->getToken();
-        echo "saved session token: " . $session->getToken() . "\n";
     }
 }
 
