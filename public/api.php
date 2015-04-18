@@ -32,6 +32,19 @@ $app->post('/api/create', function() use ($app) {
     }
 
     $data = json_decode($app->request()->getBody(), true);
+
+    $query = new ParseQuery('Event');
+    try {
+        $query->equalTo("event_id", $data["event_id"]);
+        $count = $query->count();
+    } catch (ParseException $ex) {
+        echo json_encode(array('ok' => false, 'error' => $ex->getMessage()));
+        return;
+    }
+    if ($count > 0) {
+        echo json_encode(array('ok' => false, 'error' => "Event already exists!"));
+        return;
+    }
      
     $event = new ParseObject('Event');
     $event->set('event_id', $data['event_id']);
