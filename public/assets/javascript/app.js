@@ -121,7 +121,7 @@ var NewEventForm = React.createClass({displayName: "NewEventForm",
 
     var data = {
       event_id: $('#event').val().toString(),
-      start_date: startDate.unix().toString(),
+      start_date: moment.utc(startDate).unix().toString(),
       days: $('#days').val(),
       frequency: "60"
     }
@@ -208,10 +208,10 @@ var Pick = React.createClass({displayName: "Pick",
   generateData: function() {
     var data = this.state.data;
     var start = moment.unix(data.event.start_date);
-    console.log(start.format("YYYY MM DD HH"));
+    console.log('start_date: ' + data.event.start_date);
+    console.log('start date thru moment.unix: ' + start.format("YYYY MM DD HH"));
     var table = {
       start_hour: 9,
-      end_hour: 6,
       hours: 8,
       start_day: start,
       entries: data.event.entries,
