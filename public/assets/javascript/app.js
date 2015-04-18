@@ -233,7 +233,7 @@ var Pick = React.createClass({displayName: "Pick",
     console.log('start date thru moment.unix: ' + start.format("YYYY MM DD HH"));
     var table = {
       start_hour: start_time.get('hour'),
-      hours: data.event.end_time,
+      hours: parseInt(data.event.end_time),
       start_day: start,
       entries: data.event.entries,
       days: parseInt(data.event.days)
