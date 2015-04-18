@@ -17,6 +17,7 @@
   "dependencies": {
     "bootstrap": "~3.3.4",
     "react": "~0.13.1",
-    "google-material-color": "~1.2.2"
+    "google-material-color": "~1.2.2",
+    "eonasdan-bootstrap-datetimepicker": "~4.7.14"
   }
 }

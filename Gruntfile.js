@@ -7,7 +7,7 @@ module.exports = function(grunt) {
     less: {
         development: {
             options: {
-              compress: true,  //minifying the result
+              compress: false,  //minifying the result
             },
             files: {
               //compiling frontend.less into frontend.css
@@ -24,13 +24,25 @@ module.exports = function(grunt) {
           ext: '.js'
         }
     },
+    concat: {
+      options: {
+        separator: ';',
+      },
+      dist: {
+        src: [
+          'app/assets/lib/react/react-with-addons.js',
+          'app/assets/lib/react-router/build/global/ReactRouter.js'
+        ],
+        dest: 'public/assets/javascript/react.js',
+      },
+    },
     watch: {
         js_frontend: {
           files: [
             //watched files
             './app/assets/javascript/app.jsx'
             ],   
-          tasks: ['react:files'],     //tasks to run
+          tasks: ['concat', 'react:files'],     //tasks to run
           options: {
             livereload: true                        //reloads the browser
           }
