@@ -32,17 +32,7 @@ if (!$session) {
 
 // see if we have a session
 if ($session) {
-    // TODO: redirect.
-    
-    // graph api request for user data
-    $request = new FacebookRequest( $session, 'GET', '/me' );
-    $response = $request->execute();
-    // get response
-    $graphObject = $response->getGraphObject();
-
-    // print data
-    //echo '<pre>' . print_r( $graphObject, 1 ) . '</pre>';
-    include('index.html');
+    header('Location: index.html');
 } else {
     // show login url
     header("Location:" . $helper->getLoginUrl( array('publish_actions', 'user_events', 'rsvp_event') ));
