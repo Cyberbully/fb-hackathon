@@ -131,14 +131,18 @@ $app->get('/api/details', function() {
         $request = new FacebookRequest(
             $session,
             'GET',
-            '/' . $facebookUser->getProperty('id') . '/events'
+            '/' . $facebookUser->getProperty('id') . '/events?fields=owner,id,name'
         );
         $response = $request->execute();
         $events = $response->getResponse();
 
         $event_array = [];
         foreach ($events->data as $event) {
-            array_push($event_array, array("id" => $event->id, "name" => $event->name));
+            $query = new ParseQuery('Event');
+            $query->equalTo('event_id', $event->id);
+            if ($event->owner->id == $facebookUser->getProperty('id') && !$query->count()) {
+                array_push($event_array, array("id" => $event->id, "name" => $event->name));
+            }
         }
     } catch (FacebookRequestException $ex) {
         echo json_encode(array('ok' => false, 'error' => $ex->getMessage()));
@@ -171,10 +175,11 @@ $app->post('/api/event/:event_id/preference', function($event_id) use ($app) {
     try {
         $query->equalTo("event_id", $event_id);
         $event = $query->first();
-    } catch (ParseException $ex) {
+    } catch (Exception $ex) {
         echo json_encode(array('ok' => false, 'error' => $ex->getMessage()));
         return;
     }
+
     try {
         $request = new FacebookRequest($session, 'GET', '/me');
         $response = $request->execute();
