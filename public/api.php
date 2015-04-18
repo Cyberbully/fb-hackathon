@@ -266,7 +266,7 @@ $app->post('/api/event/:event_id/preference', function($event_id) use ($app) {
 
         $best_times_str = array();
         foreach ($times as $time) {
-            $s = strftime("%A %e %B %G, %l:%M%p", $time);
+            $s = gmstrftime("%A %e %B %G, %l:%M%p", $time);
 
             array_push($best_times_str, $s);
         }
