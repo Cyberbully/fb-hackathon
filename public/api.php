@@ -114,6 +114,14 @@ $app->get('/api/details', function() {
 });
 
 $app->post('/api/event/:event_id/preference', function($event_id) use ($app) {
+    session_start();
+    $session = getSession();
+
+    if (!$session) {        
+        echo json_encode(array('ok' => false, 'error' => "Not logged in!"));
+        return;
+    }
+     
     $data = json_decode($app->request()->getBody(), true);
 
     $query = new ParseQuery('Event');
@@ -124,12 +132,39 @@ $app->post('/api/event/:event_id/preference', function($event_id) use ($app) {
         echo json_encode(array('ok' => false, 'error' => $ex->getMessage()));
         return;
     }
+    try {
+        $request = new FacebookRequest($session, 'GET', '/me');
+        $response = $request->execute();
+        $facebookUser = $response->getGraphObject(); 
+    } catch (FacebookRequestException $ex) {
+        echo json_encode(array('ok' => false, 'error' => $ex->getMessage()));
+        return;
+    } catch (Exception $ex) {
+        echo json_encode(array('ok' => false, 'error' => $ex->getMessage()));
+        return;
+    }
 
     $times = $event->get('times');
     $entries = $event->get('entries');
 
-    $event->set('times', $times);
-    $event->set('entries', $entries);
+    // Decrement all current ones.
+    if (isset($entries[$facebookUser->getProperty('id')])) {
+        foreach ($entries[$facebookUser->getProperty('id')] as $entry) {
+            $times[$entry]--;
+        }
+    }
+
+    $entries[$facebookUser->getProperty('id')] = [];
+    foreach ($data["preferences"] as $preference) {
+        if (!isset($times[$preference])) {
+            $times[$preference] = 0;
+        }
+        $times[$preference]++;
+        array_push($entries[$facebookUser->getProperty('id')], $preference);
+    }
+        
+    $event->setAssociativeArray('times', $times);
+    $event->setAssociativeArray('entries', $entries);
 
     try {
         $event->save();
