@@ -232,7 +232,7 @@ $app->post('/api/event/:event_id/preference', function($event_id) use ($app) {
             }
             return ($a < $b) ? -1 : 1;
         }
-        return ($times[$a] < $times[$b]) ? -1 : 1;
+        return ($times[$a] < $times[$b]) ? 1 : -1;
     });
 
     $people_count = count($entries);
