@@ -129,7 +129,7 @@ $app->get('/api/event/:event_id', function($event_id) {
         'event_id' => $event->get('event_id'),
         'name' => $event_data->name,
         'location' => isset($event_data->place) ? $event_data->place : "",
-        'owner' => $event_data->owner->id,
+        'owner' => $event_data->owner->name,
         'start_date' => $event->get('start_date'),
         'cover' => isset($event_data->cover) ? $event_data->cover->source: "",
         'days' => $event->get('days'),
