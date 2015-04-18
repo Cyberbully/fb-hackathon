@@ -2,6 +2,7 @@ bower_components
 node_modules
 composer*
 *.swp
+timeforhoh/index.yaml
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
