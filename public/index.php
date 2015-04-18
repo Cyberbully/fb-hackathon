@@ -27,12 +27,14 @@ if (!$session) {
 
     if ($session) {
         $_SESSION["fb-auth"] = $session->getToken();
+        header("Location: /#");
+        exit();
     }
 }
 
 // see if we have a session
 if ($session) {
-    header('Location: index.html');
+    include('index.html');
 } else {
     // show login url
     header("Location:" . $helper->getLoginUrl( array('publish_actions', 'user_events', 'rsvp_event') ));
