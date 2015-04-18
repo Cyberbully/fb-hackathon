@@ -10,7 +10,7 @@ var Toolbar = React.createClass({displayName: "Toolbar",
 
     if (Object.keys(this.props.user).length != 0) {
       existing_events = this.props.user.existing_events.map(function(event, index) {
-        return React.createElement("li", {key: index}, React.createElement("a", {href: "#pick?event=" + event.id}, event.name));
+        return React.createElement("li", {key: index}, React.createElement("a", {href: "/event/" + event.id}, event.name));
       });
     }
 

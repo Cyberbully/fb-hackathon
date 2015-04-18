@@ -10,7 +10,7 @@ var Toolbar = React.createClass({
 
     if (Object.keys(this.props.user).length != 0) {
       existing_events = this.props.user.existing_events.map(function(event, index) {
-        return <li key={index}><a href={"#pick?event=" + event.id}>{event.name}</a></li>;
+        return <li key={index}><a href={"/event/" + event.id}>{event.name}</a></li>;
       });
     }
 
