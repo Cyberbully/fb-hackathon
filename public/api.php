@@ -203,6 +203,11 @@ $app->post('/api/event/:event_id/preference', function($event_id) use ($app) {
     if (isset($entries[$facebookUser->getProperty('id')])) {
         foreach ($entries[$facebookUser->getProperty('id')] as $entry) {
             $times[$entry]--;
+
+            // remove if no longer positive
+            if ($times[$entry] <= 0) {
+                unset($times[$entry]);
+            }
         }
     }
 
@@ -219,6 +224,20 @@ $app->post('/api/event/:event_id/preference', function($event_id) use ($app) {
     $event->setAssociativeArray('entries', $entries);
 
     // determine best timeslots (TODO)
+    $best_times = array_keys($times);
+    usort($best_times, function ($a, $b) {
+        if ($times[$a] == $times[$b]) {
+            if ($a == $b) {
+                return 0;
+            }
+            return ($a < $b) ? -1 : 1;
+        }
+        return ($times[$a] < $times[$b]) ? -1 : 1;
+    });
+
+    $people_count = count($entries);
+
+    /*
     $best_times = array();
     $max_count = 0;
 
@@ -230,27 +249,59 @@ $app->post('/api/event/:event_id/preference', function($event_id) use ($app) {
             $max_count = $count;
         }
     }
+    */
+
+    $grouped_times = array();
+    $current_group = array();
+    $current_count = 0;
+
+    foreach ($best_times as $time) {
+        $count = $times[$time];
+
+        if ($count != $current_count) {
+            if ($current_count > 0) {
+                array_push($grouped_times, array($current_group, $current_count));
+                $current_group = array();
+            }
+            $current_count = $count;
+        }
+
+        array_push($current_group, $time);
+    }
+    if (count($current_group) > 0) {
+        array_push($grouped_times, array($current_group, $current_count));
+    }
 
     // post update to facebook event
-    $best_times_str = array();
-    foreach ($best_times as $time) {
-        $day = intval(strftime("%e"));
-        $s = strftime("%A %e$day %B %G, %l:%M%p");
+    $update_msgs = array();
+    foreach ($grouped_times as $times_tuple) {
+        $times = $times_tuple[0];
+        $count = $times_tuple[1];
 
-        array_push($best_times_str, $s);
+        $best_times_str = array();
+        foreach ($times as $time) {
+            $s = strftime("%A %e %B %G, %l:%M%p", $time);
+
+            array_push($best_times_str, $s);
+        }
+
+        $update_msg = "Good for $count/$people_count people:\n" . join("\n", $best_times_str);
+        array_push($update_msgs, $update_msg);
     }
-    $update_msg = "New best times:\n" . join("\n", $best_times_str);
+
+    $msg = join("\n\n", $update_msgs);
 
     $request = new FacebookRequest(
         $session,
         'POST',
-        '/' . $data['event_id'] . '/feed',
+        '/' . $event_id . '/feed',
         array (
-            'message' => $update_msg,
+            'message' => $msg,
         )
     );
 
     try {
+        $response = $request->execute();
         $event->save();
     } catch (ParseException $ex) {
         echo json_encode(array('ok' => false, 'error' => $ex->getMessage()));
