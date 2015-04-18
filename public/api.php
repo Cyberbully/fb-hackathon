@@ -110,6 +110,7 @@ $app->get('/api/event/:event_id', function($event_id) {
         return;
     }
 
+    $id_to_name = array();
     // graph api request for user data
     try {
         $request = new FacebookRequest(
@@ -119,6 +120,17 @@ $app->get('/api/event/:event_id', function($event_id) {
         );
         $response = $request->execute();
         $event_data = $response->getResponse();
+
+        foreach (array("invited") as $endpoint) {
+            $request = new FacebookRequest(
+                $session, 'GET', '/' . $event->get('event_id') . '/' . $endpoint
+            );
+            $response = $request->execute();
+            $attendees = $response->getResponse();
+            foreach ($attendees->data as $attendee) {
+                $id_to_name[$attendee->id] = $attendee->name;
+            }
+        } 
     } catch (FacebookRequestException $ex) {
         echo json_encode(array('ok' => false, 'error' => $ex->getMessage()));
         return;
@@ -140,6 +152,7 @@ $app->get('/api/event/:event_id', function($event_id) {
         'frequency' => $event->get('frequency'),
         'times' => $event->get('times'),
         'entries' => $event->get('entries'),
+        'id_to_name' => $id_to_name
     ))); 
 });
 
