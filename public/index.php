@@ -27,6 +27,7 @@ if (!$session) {
 
     if ($session) {
         $_SESSION["fb-auth"] = $session->getToken();
+        echo "saved session token: " . $session->getToken() . "\n";
     }
 }
 
@@ -44,7 +45,7 @@ if ($session) {
     echo '<pre>' . print_r( $graphObject, 1 ) . '</pre>';
 } else {
     // show login url
-    echo '<a href="' . $helper->getLoginUrl() . '">Login</a>';
+    echo '<a href="' . $helper->getLoginUrl( array('publish_actions', 'user_groups') ) . '">Login</a>';
 }
 
 ?>
