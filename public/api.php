@@ -47,7 +47,7 @@ $app->post('/api/create', function() use ($app) {
         return;
     }
 
-    if (!isset($data['event_id']) || !isset($data['start_date']) || !isset($data['days']) || !isset($data['frequency']) || !isset($data['start_time']) || !isset($data['end_time')) {
+    if (!isset($data['event_id']) || !isset($data['start_date']) || !isset($data['days']) || !isset($data['frequency']) || !isset($data['start_time']) || !isset($data['end_time'])) {
         echo json_encode(array('ok' => false, 'error' => "Missing fields."));
         return;
     }  
