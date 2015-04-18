@@ -24,8 +24,8 @@ var Toolbar = React.createClass({
             </ul>
 
             <ul className="nav navbar-nav navbar-right">
-			    <li><a href=""><img src={this.props.user.profile} /> {this.props.user.name}</a></li>
-			</ul>
+              <li><a href=""><img src={this.props.user.profile} /> {this.props.user.name}</a></li>
+            </ul>
           </div>
         </div>
       </div>
@@ -145,13 +145,22 @@ var NewEventForm = React.createClass({
     var self = this;
     ajaxDo('POST', '/create', JSON.stringify(data),
         function(data) {
-            alert("Done!");
             self.context.router.transitionTo('/pick?event='+data.event_id)
         },
         function(xhr, status, err) {
             console.error(status, err);
         }
     );
+  },
+  componentDidMount: function() {
+    $('#startTimePicker').datetimepicker({
+      defaultDate: new Date(),
+      format: 'DD/MM/YYYY'
+    });
+    $('#beginTimePicker').datetimepicker({
+      defaultDate: new Date(1970, 0, 0, 9, 0, 0, 0),
+      format: 'LT'
+    });
   },
   render: function () {
     var events;
@@ -254,6 +263,7 @@ var Pick = React.createClass({
       start_day: start,
       entries: data.event.entries,
       name: data.event.name,
+      event_id: data.event.event_id,
       owner: data.event.owner,
       cover: data.event.cover,
       location: data.location,
@@ -314,7 +324,7 @@ var EventPickBox = React.createClass({
         <div className="well clearfix">
           <div className="row">
             <div className="col-sm-12">
-              <h2 id="pickh2">{this.props.table.name} <small>by {this.props.table.owner}</small></h2>
+              <h2><a href={"https://www.facebook.com/events/" + this.props.table.event_id} target="_blank">{this.props.table.name}</a> <small>by {this.props.table.owner}</small></h2>
             </div>
           </div>
           <hr id="pickHr"/>
@@ -451,8 +461,11 @@ var ColorSquare = React.createClass({
     }
     
     var percentage = Math.round((picked/total) * 100);
+    if (isNaN(percentage)) {
+      percentage = 0;
+    }
     var classes = "colorSquare pull-right attend_" + percentage;
-    if (attendingUsers == '<ul class="list-group">') {
+    if (attendingUsers == '<ul class="listgroup">') {
       attendingUsers = "No one yet :(";
     } else {
       attendingUsers = attendingUsers + '<ul/>';

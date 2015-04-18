@@ -24,8 +24,8 @@ var Toolbar = React.createClass({displayName: "Toolbar",
             ), 
 
             React.createElement("ul", {className: "nav navbar-nav navbar-right"}, 
-			    React.createElement("li", null, React.createElement("a", {href: ""}, React.createElement("img", {src: this.props.user.profile}), " ", this.props.user.name))
-			)
+              React.createElement("li", null, React.createElement("a", {href: ""}, React.createElement("img", {src: this.props.user.profile}), " ", this.props.user.name))
+            )
           )
         )
       )
@@ -145,13 +145,22 @@ var NewEventForm = React.createClass({displayName: "NewEventForm",
     var self = this;
     ajaxDo('POST', '/create', JSON.stringify(data),
         function(data) {
-            alert("Done!");
             self.context.router.transitionTo('/pick?event='+data.event_id)
         },
         function(xhr, status, err) {
             console.error(status, err);
         }
     );
+  },
+  componentDidMount: function() {
+    $('#startTimePicker').datetimepicker({
+      defaultDate: new Date(),
+      format: 'DD/MM/YYYY'
+    });
+    $('#beginTimePicker').datetimepicker({
+      defaultDate: new Date(1970, 0, 0, 9, 0, 0, 0),
+      format: 'LT'
+    });
   },
   render: function () {
     var events;
@@ -254,6 +263,7 @@ var Pick = React.createClass({displayName: "Pick",
       start_day: start,
       entries: data.event.entries,
       name: data.event.name,
+      event_id: data.event.event_id,
       owner: data.event.owner,
       cover: data.event.cover,
       location: data.location,
@@ -314,7 +324,7 @@ var EventPickBox = React.createClass({displayName: "EventPickBox",
         React.createElement("div", {className: "well clearfix"}, 
           React.createElement("div", {className: "row"}, 
             React.createElement("div", {className: "col-sm-12"}, 
-              React.createElement("h2", {id: "pickh2"}, this.props.table.name, " ", React.createElement("small", null, "by ", this.props.table.owner))
+              React.createElement("h2", null, React.createElement("a", {href: "https://www.facebook.com/events/" + this.props.table.event_id, target: "_blank"}, this.props.table.name), " ", React.createElement("small", null, "by ", this.props.table.owner))
             )
           ), 
           React.createElement("hr", {id: "pickHr"}), 
@@ -451,8 +461,11 @@ var ColorSquare = React.createClass({displayName: "ColorSquare",
     }
     
     var percentage = Math.round((picked/total) * 100);
+    if (isNaN(percentage)) {
+      percentage = 0;
+    }
     var classes = "colorSquare pull-right attend_" + percentage;
-    if (attendingUsers == '<ul class="list-group">') {
+    if (attendingUsers == '<ul class="listgroup">') {
       attendingUsers = "No one yet :(";
     } else {
       attendingUsers = attendingUsers + '<ul/>';
