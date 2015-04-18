@@ -4,6 +4,7 @@ require_once '../app/config.php';
 
 use Parse\ParseClient;
 use Parse\ParseObject;
+use Parse\ParseQuery;
 
 $app = new \Slim\Slim();
 
@@ -14,7 +15,7 @@ $app->get('/api/hello/:name', function ($name) {
 $app->post('/api/create', function() use ($app) {
     $data = json_decode($app->request()->getBody(), true);
     
-    $eventTable = new ParseObject("EventTable");
+    $eventTable = new ParseObject("Event");
     $eventTable->set("event_id", $data["event_id"]);
     $eventTable->set("start_time", $data["start_time"]);
     $eventTable->set("end_time", $data["end_time"]);
@@ -25,13 +26,21 @@ $app->post('/api/create', function() use ($app) {
     try {
         $eventTable->save();
     } catch (ParseException $ex) {
-        $reply = array('ok' => false, 'error' => $ex->getMessage());
-        echo json_encode($reply);
+        echo json_encode(array('ok' => false, 'error' => $ex->getMessage()));
         return;
     }
 
-    $reply = array('ok' => true, 'event_id'=>$data["event_id"]);
-    echo json_encode($reply);
+    echo json_encode(array('ok' => true, 'event_id'=>$data["event_id"]));
+});
+
+$app->get('/api/event/:event_id', function(event_id) {
+    $query = new ParseQuery("Event");
+    try {
+        
+    } catch (ParseException $ex) {
+        echo json_encode(array('ok' => false, 'error' => $ex->getMessage()));
+        return;
+    }
 });
 
 $app->run();
