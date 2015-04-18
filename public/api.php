@@ -77,13 +77,26 @@ $app->get('/api/details', function() {
         $response = $request->execute();
         $facebookUser = $response->getGraphObject(); 
 
-        $request2 = new FacebookRequest(
+        $request = new FacebookRequest(
               $session,
               'GET',
               '/' . $facebookUser->getProperty('id') . '/picture?redirect=False'
           );
-        $response2 = $request2->execute();
-        $facebookProfilePic = $response2->getGraphObject();
+        $response = $request->execute();
+        $facebookProfilePic = $response->getGraphObject();
+
+        $request = new FacebookRequest(
+            $session,
+            'GET',
+            '/' . $facebookUser->getProperty('id') . '/events'
+        );
+        $response = $request->execute();
+        $events = $response->getResponse();
+
+        $event_array = [];
+        foreach ($events->data as $event) {
+            $event_array[$event->id] = $event->name; 
+        }
     } catch (FacebookRequestException $ex) {
         echo json_encode(array('ok' => false, 'error' => $ex->getMessage()));
         return;
@@ -95,7 +108,8 @@ $app->get('/api/details', function() {
     echo json_encode(array('ok' => true, 'user' => array(
         'name' => $facebookUser->getProperty('name'),
         'profile' => $facebookProfilePic->getProperty('url'),
-        'id' => $facebookUser->getProperty('id')
+        'id' => $facebookUser->getProperty('id'),
+        'events' => $event_array
     )));
 });
 
