@@ -90,6 +90,15 @@ $app->post('/api/create', function() use ($app) {
 });
 
 $app->get('/api/event/:event_id', function($event_id) {
+    session_start();
+    $session = getSession();
+
+    if (!$session) {        
+        echo json_encode(array('ok' => false, 'error' => "Not logged in!"));
+        return;
+    }
+
+
     $query = new ParseQuery('Event');
     try {
         $query->equalTo("event_id", $event_id);
@@ -99,9 +108,30 @@ $app->get('/api/event/:event_id', function($event_id) {
         return;
     }
 
+    // graph api request for user data
+    try {
+        $request = new FacebookRequest(
+            $session,
+            'GET',
+            '/' . $event->get('event_id') . '?fields=id,name,owner,cover,place' 
+        );
+        $response = $request->execute();
+        $event_data = $response->getResponse();
+    } catch (FacebookRequestException $ex) {
+        echo json_encode(array('ok' => false, 'error' => $ex->getMessage()));
+        return;
+    } catch (Exception $ex) {
+        echo json_encode(array('ok' => false, 'error' => $ex->getMessage()));
+        return;
+    }
+
     echo json_encode(array('ok' => true, 'event' => array(
         'event_id' => $event->get('event_id'),
+        'name' => $event_data->name,
+        'location' => isset($event_data->place) ? $event_data->place : "",
+        'owner' => $event_data->owner->name,
         'start_date' => $event->get('start_date'),
+        'cover' => isset($event_data->cover) ? $event_data->cover->source: "",
         'days' => $event->get('days'),
         'frequency' => $event->get('frequency'),
         'times' => $event->get('times'),
