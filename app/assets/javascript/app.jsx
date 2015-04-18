@@ -42,7 +42,7 @@ var Messages = React.createClass({
 
 var App = React.createClass({
   getInitialState: function() {
-    return {user: {}}
+    return {user: {}, loading: true}
   },
   componentDidMount: function() {
     var self = this;
@@ -50,7 +50,8 @@ var App = React.createClass({
       function(data) {
         if (data.ok) {
           self.setState({user: data.user});
-        } 
+        }
+        self.setState({loading:false})
       },
       function(xhr, status, error) {
       
@@ -58,10 +59,24 @@ var App = React.createClass({
     )
   },
   render: function () {
+    
+    if (this.state.loading) {
+      var h = 'hide';
+      var c = 'vertical-center' 
+    } else {
+      var c = 'hide';
+    }
+
     return (
-      <div className="container">
-        {/* this is the important part */}
-        <RouteHandler user={this.state.user}/>
+      <div>
+        <div id="loader" className={c}>
+          <img id="loaderimg" src="assets/image/loader.gif"/>
+        </div>
+        <div className={h}>
+          <div className="container">
+            <RouteHandler user={this.state.user}/>
+          </div>
+        </div>
       </div>
     );
   }
@@ -151,6 +166,14 @@ var NewEventForm = React.createClass({
         <div className="row">
           <div className="col-md-6 col-md-offset-3 col-sm-12">
             <div className="well">
+              <div className="row">
+                <div className="col-sm-12">
+
+                  <h2 id="pickh2">New Event</h2>
+                  </div>
+                  </div>
+                  <hr id="pickHr"/>
+
               <div className="row">
                 <div className="col-sm-12">
                     <div className="form-group">
@@ -291,13 +314,13 @@ var EventPickBox = React.createClass({
         <div className="well clearfix">
           <div className="row">
             <div className="col-sm-12">
-              <h1>{this.props.table.name} <small>by {this.props.table.owner}</small></h1>
+              <h2 id="pickh2">{this.props.table.name} <small>by {this.props.table.owner}</small></h2>
             </div>
           </div>
-          <br />
-          <EventPickTable ref="table" table={this.props.table} user={this.props.user} />
+          <hr id="pickHr"/>
           <div className="row">
             <div className="col-sm-12">
+              <EventPickTable ref="table" table={this.props.table} user={this.props.user} />
               <div className="pull-left" id="selectText">Select the times that you are available by clicking or dragging on the table.</div>
               <button className="btn btn-primary pull-right" id="saveTable" type="button" onClick={this.onClick}>Save Preferences</button>
             </div>
@@ -323,8 +346,6 @@ var EventPickTable = React.createClass({
       }
 
       return (
-        <div className="row">
-          <div className="col-sm-12">
             <table id="timePicker" className="table table-bordered">
               <thead>
               <EventPickHeaderRow table={this.props.table}/>
@@ -333,8 +354,6 @@ var EventPickTable = React.createClass({
               {rows}
               </tbody>
             </table>
-          </div>
-        </div>
       );
     }
 });
@@ -420,13 +439,13 @@ var ColorSquare = React.createClass({
   render: function() {
     var total = 0;
     var picked = 0;
-    var attendingUsers = '<ul class="list-group">';
+    var attendingUsers = '<ul class="listgroup">';
     var entries = this.props.entries;
     var self = this;
     for (var key in entries) {
       if(entries[key] && entries[key].indexOf(self.props.time) > -1) {
         picked++;
-        attendingUsers = attendingUsers + '<li class="list-group-item">'+ this.props.id_to_name[key] + '</li>';
+        attendingUsers = attendingUsers + '<li>'+ this.props.id_to_name[key] + '</li>';
       }
       total++;
     }

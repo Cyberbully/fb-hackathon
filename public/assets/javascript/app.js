@@ -42,7 +42,7 @@ var Messages = React.createClass({displayName: "Messages",
 
 var App = React.createClass({displayName: "App",
   getInitialState: function() {
-    return {user: {}}
+    return {user: {}, loading: true}
   },
   componentDidMount: function() {
     var self = this;
@@ -50,7 +50,8 @@ var App = React.createClass({displayName: "App",
       function(data) {
         if (data.ok) {
           self.setState({user: data.user});
-        } 
+        }
+        self.setState({loading:false})
       },
       function(xhr, status, error) {
       
@@ -58,10 +59,24 @@ var App = React.createClass({displayName: "App",
     )
   },
   render: function () {
+    
+    if (this.state.loading) {
+      var h = 'hide';
+      var c = 'vertical-center' 
+    } else {
+      var c = 'hide';
+    }
+
     return (
-      React.createElement("div", {className: "container"}, 
-        /* this is the important part */
-        React.createElement(RouteHandler, {user: this.state.user})
+      React.createElement("div", null, 
+        React.createElement("div", {id: "loader", className: c}, 
+          React.createElement("img", {id: "loaderimg", src: "assets/image/loader.gif"})
+        ), 
+        React.createElement("div", {className: h}, 
+          React.createElement("div", {className: "container"}, 
+            React.createElement(RouteHandler, {user: this.state.user})
+          )
+        )
       )
     );
   }
@@ -151,6 +166,14 @@ var NewEventForm = React.createClass({displayName: "NewEventForm",
         React.createElement("div", {className: "row"}, 
           React.createElement("div", {className: "col-md-6 col-md-offset-3 col-sm-12"}, 
             React.createElement("div", {className: "well"}, 
+              React.createElement("div", {className: "row"}, 
+                React.createElement("div", {className: "col-sm-12"}, 
+
+                  React.createElement("h2", {id: "pickh2"}, "New Event")
+                  )
+                  ), 
+                  React.createElement("hr", {id: "pickHr"}), 
+
               React.createElement("div", {className: "row"}, 
                 React.createElement("div", {className: "col-sm-12"}, 
                     React.createElement("div", {className: "form-group"}, 
@@ -291,13 +314,13 @@ var EventPickBox = React.createClass({displayName: "EventPickBox",
         React.createElement("div", {className: "well clearfix"}, 
           React.createElement("div", {className: "row"}, 
             React.createElement("div", {className: "col-sm-12"}, 
-              React.createElement("h1", null, this.props.table.name, " ", React.createElement("small", null, "by ", this.props.table.owner))
+              React.createElement("h2", {id: "pickh2"}, this.props.table.name, " ", React.createElement("small", null, "by ", this.props.table.owner))
             )
           ), 
-          React.createElement("br", null), 
-          React.createElement(EventPickTable, {ref: "table", table: this.props.table, user: this.props.user}), 
+          React.createElement("hr", {id: "pickHr"}), 
           React.createElement("div", {className: "row"}, 
             React.createElement("div", {className: "col-sm-12"}, 
+              React.createElement(EventPickTable, {ref: "table", table: this.props.table, user: this.props.user}), 
               React.createElement("div", {className: "pull-left", id: "selectText"}, "Select the times that you are available by clicking or dragging on the table."), 
               React.createElement("button", {className: "btn btn-primary pull-right", id: "saveTable", type: "button", onClick: this.onClick}, "Save Preferences")
             )
@@ -323,8 +346,6 @@ var EventPickTable = React.createClass({displayName: "EventPickTable",
       }
 
       return (
-        React.createElement("div", {className: "row"}, 
-          React.createElement("div", {className: "col-sm-12"}, 
             React.createElement("table", {id: "timePicker", className: "table table-bordered"}, 
               React.createElement("thead", null, 
               React.createElement(EventPickHeaderRow, {table: this.props.table})
@@ -333,8 +354,6 @@ var EventPickTable = React.createClass({displayName: "EventPickTable",
               rows
               )
             )
-          )
-        )
       );
     }
 });
@@ -420,13 +439,13 @@ var ColorSquare = React.createClass({displayName: "ColorSquare",
   render: function() {
     var total = 0;
     var picked = 0;
-    var attendingUsers = '<ul class="list-group">';
+    var attendingUsers = '<ul class="listgroup">';
     var entries = this.props.entries;
     var self = this;
     for (var key in entries) {
       if(entries[key] && entries[key].indexOf(self.props.time) > -1) {
         picked++;
-        attendingUsers = attendingUsers + '<li class="list-group-item">'+ this.props.id_to_name[key] + '</li>';
+        attendingUsers = attendingUsers + '<li>'+ this.props.id_to_name[key] + '</li>';
       }
       total++;
     }

@@ -1,3 +1,5 @@
+
+@import 'variables';
 @import "base";
 @import (inline) "styles.css";
 @import (inline) "../lib/eonasdan-bootstrap-datetimepicker/build/css/bootstrap-datetimepicker.min.css";
@@ -19,11 +21,27 @@ table td, table th {
   background: white;
 }
 
+body {
+  background: #e9eaed;
+}
 
+.well {
+  background: #fff;
+}
+
+#pickHr {
+  margin-left: -20px;
+  margin-right: -20px;
+}
+
+#pickh2 {
+  margin-top:0px;
+  margin-bottom: 0px;
+}
 
 
 #selectText {
-  padding-top: 10px;
+  padding-top: 6px;
 }
 
 .colorSquare {
@@ -33,6 +51,15 @@ table td, table th {
   border: 3px solid #eee;
 }
 
+.listgroup {
+
+    padding-left:0;
+    margin-left:0;
+    li {
+    list-style-type: none;
+  }
+}
+
 .loopingClass (@index) when (@index > 0){
   .attend_@{index}{
     background: hsl(@index, 80%, 60%);
@@ -40,3 +67,18 @@ table td, table th {
   .loopingClass(@index - 1);
 }
 .loopingClass(100);
+
+.vertical-center {
+  min-height: 100%;  /* Fallback for browsers do NOT support vh unit */
+  min-height: 100vh; /* These two lines are counted as one :-)       */
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  text-align: center;
+}
+
+#loaderimg {
+  margin: 0 auto;
+  height: 32px;
+  width: 32px;
+}
