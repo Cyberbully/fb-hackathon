@@ -47,15 +47,15 @@ $app->post('/api/create', function() use ($app) {
         return;
     }
 
-    if (!isset($data['event_id']) || !isset($data['start_time']) || !isset($data['end_time']) || !isset($data['frequency'])) {
+    if (!isset($data['event_id']) || !isset($data['start_date']) || !isset($data['days']) || !isset($data['frequency'])) {
         echo json_encode(array('ok' => false, 'error' => "Missing fields."));
         return;
     }  
 
     $event = new ParseObject('Event');
     $event->set('event_id', $data['event_id']);
-    $event->set('start_time', $data['start_time']);
-    $event->set('end_time', $data['end_time']);
+    $event->set('start_date', $data['start_date']);
+    $event->set('days', $data['days']);
     $event->set('frequency', $data['frequency']);
     $event->setAssociativeArray('times', []);
     $event->setAssociativeArray('entries', []);
@@ -101,8 +101,8 @@ $app->get('/api/event/:event_id', function($event_id) {
 
     echo json_encode(array('ok' => true, 'event' => array(
         'event_id' => $event->get('event_id'),
-        'start_time' => $event->get('start_time'),
-        'end_time' => $event->get('end_time'),
+        'start_date' => $event->get('start_date'),
+        'days' => $event->get('days'),
         'frequency' => $event->get('frequency'),
         'times' => $event->get('times'),
         'entries' => $event->get('entries'),
