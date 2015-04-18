@@ -121,7 +121,7 @@ var NewEventForm = React.createClass({displayName: "NewEventForm",
 
     var data = {
       event_id: $('#event').val().toString(),
-      start_date: moment.utc(startDate).unix().toString(),
+      start_date: moment(startDate).unix().toString(),
       days: $('#days').val(),
       frequency: "60"
     }
@@ -239,13 +239,13 @@ var Pick = React.createClass({displayName: "Pick",
     var merged = [];
     merged = merged.concat.apply(merged, data);
     console.log(merged);
-    {/*ajaxDo('POST', '/event/' + this.state.id + '/preference', JSON.stringify({"preferences":merged}),
+    ajaxDo('POST', '/event/' + this.state.id + '/preference', JSON.stringify({"preferences":merged}),
           function(data) {
             console.log(data);
           },
           function(xhr, status, error) {
             console.log(error);
-          });*/}
+          });
   },
   getInitialState: function() {
     return {table: {}, show: true};
@@ -355,18 +355,19 @@ var EventPickCell = React.createClass({displayName: "EventPickCell",
     if(!$('#cell' + this.props.row_index + 'x' + this.props.index).hasClass('highlighted')) {
       return false;
     }
-    var i = this.props.day.add(this.props.row_index+this.props.table.start_hour, 'hours').unix();
-    console.log(i);
-    console.log(this.props.day.format("YYYY MM DD HH"));
+    var i = moment(this.props.day).add(this.props.row_index+this.props.table.start_hour, 'hours').unix();
     return i;
   },
   render: function() {
     var highlighted = '';
     if(Object.keys(this.props.user).length > 0) {
       var entries = this.props.table.entries[this.props.user.id];
-      var thistime = this.props.day.add(this.props.row_index+this.props.table.start_hour, 'hours').format('x');
+      var thistime = moment(this.props.day).add(this.props.row_index+this.props.table.start_hour, 'hours').unix();
+      console.log(entries[0]);
+      console.log(entries[0] - thistime);
       if(entries && entries.indexOf(thistime) > -1) {
         highlighted = 'highlighted';
+        console.log("true");
       }
     }
     return React.createElement("td", {className: highlighted, id: 'cell' + this.props.row_index + 'x' + this.props.index}, this.props.row_index + this.props.table.start_hour)
