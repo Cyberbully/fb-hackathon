@@ -63,7 +63,6 @@ $app->post('/api/event/:event_id/preference', function($event_id) {
         return;
     }
     
-    
 });
 
 $app->run();
