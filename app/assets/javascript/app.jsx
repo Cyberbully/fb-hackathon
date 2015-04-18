@@ -30,7 +30,7 @@ var Toolbar = React.createClass({
           <div id="navbar" className="navbar-collapse collapse">
             <ul className="nav navbar-nav">
               <li><a href='#'>New Event</a></li>
-              <li class="dropdown">
+              <li className="dropdown">
                 <a href="#/" className="dropdown-toggle" data-toggle="dropdown" role="button">Your Events <span className="caret"></span></a>
                 <ul className="dropdown-menu" role="menu">
                   {existing_events}
