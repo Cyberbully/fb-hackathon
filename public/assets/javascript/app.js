@@ -5,8 +5,6 @@ var Route = Router.Route;
 var RouteHandler = Router.RouteHandler;
 
 
-
-
 var Toolbar = React.createClass({displayName: "Toolbar",
   render: function() {
     return (
@@ -27,14 +25,15 @@ var Toolbar = React.createClass({displayName: "Toolbar",
             ), 
 
             React.createElement("ul", {className: "nav navbar-nav navbar-right"}, 
-								  React.createElement("li", null, React.createElement("a", {href: ""}, React.createElement("img", {src: this.props.user.profile}), " ", this.props.user.name))
-							)
+			    React.createElement("li", null, React.createElement("a", {href: ""}, React.createElement("img", {src: this.props.user.profile}), " ", this.props.user.name))
+			)
           )
         )
       )
     );
   }
 });
+
 
 var Messages = React.createClass({displayName: "Messages",
   render: function() {
@@ -113,7 +112,10 @@ var NewEventForm = React.createClass({displayName: "NewEventForm",
 
     var startDate = $('#startTimePicker').data("DateTimePicker").date();
     var endDate = $('#days').val();
-    if(!startDate || !endDate) {
+
+    var startTime = $('#beginTimePicker').data("DateTimePicker").time();
+
+    if (!startDate || !endDate) {
       alert("Pleas enter a time for the start and the end");
       return false;
     }
@@ -121,18 +123,21 @@ var NewEventForm = React.createClass({displayName: "NewEventForm",
     var data = {
       event_id: $('#event').val().toString(),
       start_date: moment(startDate).unix().toString(),
+      start_time: moment(startTime).unix().toString(),
+      end_time: $('#hours').val().toString(),
       days: $('#days').val(),
       frequency: "60"
     }
     var self = this;
-   ajaxDo('POST', '/create', JSON.stringify(data),
-    function(data) {
-        alert("Done!");
-        self.context.router.transitionTo('/pick?event='+data.event_id)
-      },
-      function(xhr, status, err) {
-        console.error(status, err);
-      }
+    
+    ajaxDo('POST', '/create', JSON.stringify(data),
+        function(data) {
+            alert("Done!");
+            self.context.router.transitionTo('/pick?event='+data.event_id)
+        },
+        function(xhr, status, err) {
+            console.error(status, err);
+        }
     );
   },
   render: function () {
@@ -179,6 +184,29 @@ var NewEventForm = React.createClass({displayName: "NewEventForm",
                     )
                   )
                 ), 
+                
+                React.createElement("div", {className: "row"}, 
+                  React.createElement("div", {className: "col-md-6 col-sm-12"}, 
+                    React.createElement("div", {className: "form-group"}, 
+                      React.createElement("label", {htmlFor: "beginTime"}, "Start Time"), 
+                      React.createElement("div", {className: "input-group date", id: "beginTimePicker"}, 
+                        React.createElement("input", {type: "text", id: "beginTime", className: "form-control"}), 
+                        React.createElement("span", {className: "input-group-addon"}, 
+                          React.createElement("span", {className: "glyphicon glyphicon-calendar"})
+                        )
+
+                      )
+                    )
+                  ), 
+
+                  React.createElement("div", {className: "col-md-6 col-sm-12"}, 
+                    React.createElement("div", {className: "form-group"}, 
+                      React.createElement("label", {htmlFor: "hours"}, "Hours"), 
+                      React.createElement("input", {type: "number", id: "hours", className: "form-control", defaultValue: "8"})
+                    )
+                  )
+                ), 
+
                 React.createElement("div", {className: "row"}, 
                   React.createElement("div", {className: "col-sm-12"}, 
                   React.createElement("button", {className: "btn btn-primary pull-right", type: "button", onClick: this.onClick}, "Create Event")
@@ -199,11 +227,13 @@ var Pick = React.createClass({displayName: "Pick",
   generateData: function() {
     var data = this.state.data;
     var start = moment.unix(data.event.start_date);
+    var start_time = moment.unix(data.event.start_time);
+
     console.log('start_date: ' + data.event.start_date);
     console.log('start date thru moment.unix: ' + start.format("YYYY MM DD HH"));
     var table = {
-      start_hour: 9,
-      hours: 8,
+      start_hour: start_time.get('hour'),
+      hours: parseInt(data.event.end_time),
       start_day: start,
       entries: data.event.entries,
       days: parseInt(data.event.days)
