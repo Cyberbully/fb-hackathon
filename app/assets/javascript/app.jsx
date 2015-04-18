@@ -21,7 +21,7 @@ var Toolbar = React.createClass({
           </div>
           <div id="navbar" className="navbar-collapse collapse">
             <ul className="nav navbar-nav">
-              <li><Link to="app">Time for Hoh Wan</Link></li>
+              <li><Link to="app">Time for Hoh Won</Link></li>
             </ul>
 
             <ul className="nav navbar-nav navbar-right">
@@ -116,7 +116,7 @@ var NewEventForm = React.createClass({
     var startTime = $('#beginTimePicker').data("DateTimePicker").date();
 
     if (!startDate || !endDate) {
-      alert("Pleas enter a time for the start and the end");
+      alert("Please enter a time for the start and the end");
       return false;
     }
 
