@@ -15,31 +15,36 @@ use Facebook\GraphObject;
 session_start();
 
 // login helper with redirect_uri
-$helper = new FacebookRedirectLoginHelper('http://localhost/index.php');
+$helper = new FacebookRedirectLoginHelper($LOGIN_URL);
 
-try {
-  $session = $helper->getSessionFromRedirect();
-} catch( FacebookRequestException $ex ) {
-  // When Facebook returns an error
-} catch( Exception $ex ) {
-  // When validation fails or other local issues
+$session = getSession();
+if (!$session) {
+    try {
+        $session = $helper->getSessionFromRedirect();
+    } catch (FacebookRequestException $ex) {
+    } catch (Exception $ex) {
+    }
+
+    if ($session) {
+        $_SESSION["fb-auth"] = $session->getToken();
+    }
 }
 
 // see if we have a session
-if (isset($session)) {
-  // graph api request for user data
-  $request = new FacebookRequest( $session, 'GET', '/me' );
-  $response = $request->execute();
-  // get response
-  $graphObject = $response->getGraphObject();
+if ($session) {
+    // TODO: redirect.
+    
+    // graph api request for user data
+    $request = new FacebookRequest( $session, 'GET', '/me' );
+    $response = $request->execute();
+    // get response
+    $graphObject = $response->getGraphObject();
 
-  // print data
-  echo '<pre>' . print_r( $graphObject, 1 ) . '</pre>';
-
-  $_SESSION["fb-auth"] = $session->getToken();
+    // print data
+    echo '<pre>' . print_r( $graphObject, 1 ) . '</pre>';
 } else {
-  // show login url
-  echo '<a href="' . $helper->getLoginUrl() . '">Login</a>';
+    // show login url
+    echo '<a href="' . $helper->getLoginUrl() . '">Login</a>';
 }
 
 ?>
