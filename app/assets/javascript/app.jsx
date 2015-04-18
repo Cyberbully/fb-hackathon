@@ -308,6 +308,7 @@ var Pick = React.createClass({
     ajaxDo('POST', '/event/' + this.state.id + '/preference', JSON.stringify({"preferences":merged}),
           function(data) {
             $("#saveTable").html("Save Preferences").attr('disabled', false);
+            location.reload();
           },
           function(xhr, status, error) {
             console.log(error);
