@@ -20,7 +20,7 @@ var Toolbar = React.createClass({displayName: "Toolbar",
           ), 
           React.createElement("div", {id: "navbar", className: "navbar-collapse collapse"}, 
             React.createElement("ul", {className: "nav navbar-nav"}, 
-              React.createElement("li", null, React.createElement(Link, {to: "app"}, "Time for Hoh Wan"))
+              React.createElement("li", null, React.createElement(Link, {to: "app"}, "Time for Hoh Won"))
             ), 
 
             React.createElement("ul", {className: "nav navbar-nav navbar-right"}, 
@@ -32,6 +32,7 @@ var Toolbar = React.createClass({displayName: "Toolbar",
     );
   }
 });
+
 
 var Messages = React.createClass({displayName: "Messages",
   render: function() {
@@ -102,6 +103,7 @@ function ajaxDo(method, endpoint, data, success, error) {
   });
 }
 
+
 var NewEventForm = React.createClass({displayName: "NewEventForm",
   contextTypes: {
     router: React.PropTypes.func
@@ -110,17 +112,18 @@ var NewEventForm = React.createClass({displayName: "NewEventForm",
 
     var startDate = $('#startTimePicker').data("DateTimePicker").date();
     var endDate = $('#days').val();
-    
-    
+    var startTime = $('#beginTimePicker').data("DateTimePicker").date();
 
     if (!startDate || !endDate) {
-      alert("Pleas enter a time for the start and the end");
+      alert("Please enter a time for the start and the end");
       return false;
     }
 
     var data = {
       event_id: $('#event').val().toString(),
       start_date: moment(startDate).unix().toString(),
+      start_time: moment(startTime).unix().toString(),
+      end_time: $('#hours').val().toString(),
       days: $('#days').val(),
       frequency: "60"
     }
@@ -180,6 +183,29 @@ var NewEventForm = React.createClass({displayName: "NewEventForm",
                     )
                   )
                 ), 
+                
+                React.createElement("div", {className: "row"}, 
+                  React.createElement("div", {className: "col-md-6 col-sm-12"}, 
+                    React.createElement("div", {className: "form-group"}, 
+                      React.createElement("label", {htmlFor: "beginTime"}, "Start Time"), 
+                      React.createElement("div", {className: "input-group date", id: "beginTimePicker"}, 
+                        React.createElement("input", {type: "text", id: "beginTime", className: "form-control"}), 
+                        React.createElement("span", {className: "input-group-addon"}, 
+                          React.createElement("span", {className: "glyphicon glyphicon-calendar"})
+                        )
+
+                      )
+                    )
+                  ), 
+
+                  React.createElement("div", {className: "col-md-6 col-sm-12"}, 
+                    React.createElement("div", {className: "form-group"}, 
+                      React.createElement("label", {htmlFor: "hours"}, "Hours"), 
+                      React.createElement("input", {type: "number", id: "hours", className: "form-control", defaultValue: "8"})
+                    )
+                  )
+                ), 
+
                 React.createElement("div", {className: "row"}, 
                   React.createElement("div", {className: "col-sm-12"}, 
                   React.createElement("button", {className: "btn btn-primary pull-right", type: "button", onClick: this.onClick}, "Create Event")
@@ -200,11 +226,12 @@ var Pick = React.createClass({displayName: "Pick",
   generateData: function() {
     var data = this.state.data;
     var start = moment.unix(data.event.start_date);
+
     console.log('start_date: ' + data.event.start_date);
     console.log('start date thru moment.unix: ' + start.format("YYYY MM DD HH"));
     var table = {
-      start_hour: 9,
-      hours: 8,
+      start_hour: moment.unix(data.event.start_time).get('hour'),
+      hours: parseInt(data.event.end_time),
       start_day: start,
       entries: data.event.entries,
       days: parseInt(data.event.days)
@@ -286,7 +313,7 @@ var EventPickTable = React.createClass({displayName: "EventPickTable",
     },
     render: function() {
       var rows = [];
-      for (var i=0;i<=this.props.table.hours;i++) {
+      for (var i=0;i<this.props.table.hours;i++) {
         rows.push(React.createElement(EventPickRow, {ref: 'row' + i, row_index: i, key: i, table: this.props.table, user: this.props.user}))
       }
 
