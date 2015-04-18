@@ -20,7 +20,6 @@
   </head>
   <body>
     <div class="container" id="container"></div>
-    
     <script src="assets/javascript/app.js"></script>
     <script src="assets/javascript/moment.min.js"></script>
     <script src="assets/javascript/bootstrap-datetimepicker.min.js"></script>
@@ -43,6 +42,7 @@
         isSelected = $(this).hasClass("highlighted");
         isMouseDown = true;
         $(this).toggleClass("highlighted");
+        return false;
       }).on('mouseover', '#timePicker td', function(event) {
         if (isMouseDown) {
           if (isSelected) {
