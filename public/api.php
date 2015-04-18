@@ -23,6 +23,14 @@ $app->get('/api/hello/:name', function ($name) {
 });
 
 $app->post('/api/create', function() use ($app) {
+    session_start();
+    $session = getSession();
+
+    if (!$session) {        
+        echo json_encode(array('ok' => false, 'error' => "Not logged in!"));
+        return;
+    }
+
     $data = json_decode($app->request()->getBody(), true);
      
     $event = new ParseObject('Event');
@@ -32,6 +40,22 @@ $app->post('/api/create', function() use ($app) {
     $event->set('frequency', $data['frequency']);
     $event->setAssociativeArray('times', []);
     $event->setAssociativeArray('entries', []);
+
+    // post to event on facebook 
+    $request = new FacebookRequest(
+        $session,
+        'POST',
+        '/' . $data['event_id'] . '/feed',
+        array (
+            'message' => "Greetings, friends! Let's find the best time for our event",
+            'link' => $EVENT_BASE_URL . $data['event_id'],
+            'name' => 'Time for Hoh Won',
+            'description' => 'Choose which times are best for you',
+            'picture' => 'http://a4.urbancdn.com/w/s/Ob/1PMs50OPsKTpK4.jpg',
+        )
+    );
+    $response = $request->execute();
+    $graphObject = $response->getGraphObject();
 
     try {
         $event->save();
