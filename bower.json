@@ -1,0 +1,22 @@
+{
+  "name": "fb",
+  "version": "0.0.0",
+  "homepage": "https://github.com/Cyberbully/fb-hackathon",
+  "authors": [
+    "John Wiseheart <johnwiseheart@gmail.com>"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "public/assets/lib",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "bootstrap": "~3.3.4",
+    "react": "~0.13.1",
+    "google-material-color": "~1.2.2"
+  }
+}
