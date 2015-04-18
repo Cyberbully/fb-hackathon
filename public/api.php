@@ -188,11 +188,16 @@ $app->get('/api/details', function() {
         $events = $response->getResponse();
 
         $event_array = [];
+        $existing_event_array = [];
         foreach ($events->data as $event) {
             $query = new ParseQuery('Event');
             $query->equalTo('event_id', $event->id);
-            if ($event->owner->id == $facebookUser->getProperty('id') && !$query->count()) {
-                array_push($event_array, array("id" => $event->id, "name" => $event->name));
+            if ($event->owner->id == $facebookUser->getProperty('id')) {
+                if (!$query->count()) {
+                    array_push($event_array, array("id" => $event->id, "name" => $event->name));
+                } else {
+                    array_push($existing_event_array, array("id" => $event->id, "name" => $event->name));
+                }
             }
         }
     } catch (FacebookRequestException $ex) {
@@ -207,7 +212,8 @@ $app->get('/api/details', function() {
         'name' => $facebookUser->getProperty('name'),
         'profile' => $facebookProfilePic->getProperty('url'),
         'id' => $facebookUser->getProperty('id'),
-        'events' => $event_array
+        'events' => $event_array,
+        'existing_events' => $existing_event_array
     )));
 });
 
