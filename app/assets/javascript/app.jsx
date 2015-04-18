@@ -389,7 +389,21 @@ var EventPickCell = React.createClass({
         console.log("true");
       }
     }
-    return <td className={highlighted} id={'cell' + this.props.row_index + 'x' + this.props.index}>{this.props.row_index + this.props.table.start_hour}</td>
+
+    var hour = this.props.row_index + this.props.table.start_hour;
+    var hour_str;
+    if (hour < 12) {
+        if (hour == 0) {
+            hour = 12;
+        }
+        hour_str = hour + 'am';
+    } else {
+        if (hour > 12) {
+            hour -= 12;
+        }
+        hour_str = hour + 'pm';
+    }
+    return <td className={highlighted} id={'cell' + this.props.row_index + 'x' + this.props.index}>{hour_str}</td>
     }
 });
 
