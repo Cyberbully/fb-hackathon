@@ -7,7 +7,7 @@ $HOST = "localhost";
 
 $LOGIN_URL = "http://" . $HOST . "/index.php";
 
-FacebookSession::setDefaultApplication('794867827234077', 'a400da5218753a7d50cf9e44e1b581f0');
+FacebookSession::setDefaultApplication('794918943895632', 'ea9cca1cd754446cb4dfe77affdf590f');
 ParseClient::initialize('irepUXm37Mzk2XFwYxv4QO2DyYxEq1rRz7rDY3wY', 'nWVmmyGJosJ2XoAUiLF8uvJbECNPsRTGmxYDAl8v', 'C2N4yYCioohT24Me2iGTQlBmlGDdO7l2Ge18L7tg');
 
 date_default_timezone_set("Australia/Sydney");
