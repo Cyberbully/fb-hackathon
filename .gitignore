@@ -1,6 +1,7 @@
 bower_components
 node_modules
 */composer.phar
+*/composer.lock
 *.swp
 timeforhoh/index.yaml
 

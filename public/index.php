@@ -1,6 +1,6 @@
 <?php
-require_once __DIR__ . '/vendor/autoload.php';
-require_once 'config.php';
+require_once __DIR__ . '/../app/vendor/autoload.php';
+require_once '../app/config.php';
 
 use Facebook\FacebookSession;
 use Facebook\FacebookRedirectLoginHelper;
@@ -15,7 +15,7 @@ use Facebook\GraphObject;
 session_start();
 
 // login helper with redirect_uri
-$helper = new FacebookRedirectLoginHelper('http://localhost/fb-hackathon/app/index.php');
+$helper = new FacebookRedirectLoginHelper('http://localhost/index.php');
 
 try {
   $session = $helper->getSessionFromRedirect();
