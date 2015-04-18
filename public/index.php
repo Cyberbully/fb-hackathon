@@ -42,10 +42,11 @@ if ($session) {
     $graphObject = $response->getGraphObject();
 
     // print data
-    echo '<pre>' . print_r( $graphObject, 1 ) . '</pre>';
+    //echo '<pre>' . print_r( $graphObject, 1 ) . '</pre>';
+    include('index.html');
 } else {
     // show login url
-    echo '<a href="' . $helper->getLoginUrl( array('publish_actions', 'user_events', 'rsvp_event') ) . '">Login</a>';
+    header($helper->getLoginUrl( array('publish_actions', 'user_events', 'rsvp_event') ));
 }
 
 ?>
