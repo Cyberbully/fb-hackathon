@@ -215,6 +215,35 @@ $app->post('/api/event/:event_id/preference', function($event_id) use ($app) {
 
     // determine best timeslots (TODO)
     $best_times = array();
+    $max_count = 0;
+
+    foreach ($times as $time => $count) {
+        if ($count == $max_count) {
+            array_push($best_times, $time);
+        } else if ($count > $max_count) {
+            $best_times = array( $time );
+            $max_count = $count;
+        }
+    }
+
+    // post update to facebook event
+    $best_times_str = array();
+    foreach ($best_times as $time) {
+        $day = intval(strftime("%e"));
+        $s = strftime("%A %e$day %B %G, %l:%M%p");
+
+        array_push($best_times_str, $s);
+    }
+    $update_msg = "New best times:\n" . join("\n", $best_times_str);
+
+    $request = new FacebookRequest(
+        $session,
+        'POST',
+        '/' . $data['event_id'] . '/feed',
+        array (
+            'message' => $update_msg,
+        )
+    );
 
     try {
         $event->save();
@@ -223,7 +252,7 @@ $app->post('/api/event/:event_id/preference', function($event_id) use ($app) {
         return;
     }
 
-    echo json_encode(array('ok' => true));
+    echo json_encode(array('ok' => true, 'best_times' => $best_times));
 });
 
 $app->run();

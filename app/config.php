@@ -3,7 +3,7 @@ require_once __DIR__ . '/vendor/autoload.php';
 use Facebook\FacebookSession;
 use Parse\ParseClient;
 
-$HOST = "fb.jcaw.me";
+$HOST = "localhost";
 
 $LOGIN_URL = "http://" . $HOST . "/";
 //$EVENT_BASE_URL = "http://" . $HOST . "/event/";
