@@ -15,11 +15,11 @@ use Facebook\GraphObject;
 session_start();
 
 // login helper with redirect_uri
-$loginUrl = $GLOBALS["LOGIN_URL"];
+$redirectUrl = $GLOBALS["LOGIN_URL"];
 if (isset($_GET["event"])) {
-    $loginUrl = $GLOBALS["EVENT_BASE_URL"] . $_GET["event"];
+    $redirectUrl = $GLOBALS["EVENT_BASE_URL"] . $_GET["event"];
 }
-$helper = new FacebookRedirectLoginHelper($loginUrl);
+$helper = new FacebookRedirectLoginHelper($redirectUrl);
 
 $session = getSession();
 if (!$session) {
@@ -49,7 +49,9 @@ if ($session) {
     include('index.html');
 } else {
     // show login url
-    header("Location: " . $helper->getLoginUrl( array('publish_actions', 'user_events', 'rsvp_event') ));
+    //header("Location: " . $helper->getLoginUrl( array('publish_actions', 'user_events', 'rsvp_event') ));
+    $loginUrl = $helper->getLoginUrl( array('publish_actions', 'user_events', 'rsvp_event') );
+    include('static.html');
 }
 
 ?>
