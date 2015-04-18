@@ -4,7 +4,6 @@ var Link = Router.Link;
 var Route = Router.Route;
 var RouteHandler = Router.RouteHandler;
 
-
 var Toolbar = React.createClass({
   render: function() {
     return (
