@@ -30,7 +30,7 @@ var Toolbar = React.createClass({displayName: "Toolbar",
           React.createElement("div", {id: "navbar", className: "navbar-collapse collapse"}, 
             React.createElement("ul", {className: "nav navbar-nav"}, 
               React.createElement("li", null, React.createElement("a", {href: "#"}, "New Event")), 
-              React.createElement("li", {class: "dropdown"}, 
+              React.createElement("li", {className: "dropdown"}, 
                 React.createElement("a", {href: "#/", className: "dropdown-toggle", "data-toggle": "dropdown", role: "button"}, "Your Events ", React.createElement("span", {className: "caret"})), 
                 React.createElement("ul", {className: "dropdown-menu", role: "menu"}, 
                   existing_events
@@ -308,6 +308,7 @@ var Pick = React.createClass({displayName: "Pick",
     ajaxDo('POST', '/event/' + this.state.id + '/preference', JSON.stringify({"preferences":merged}),
           function(data) {
             $("#saveTable").html("Save Preferences").attr('disabled', false);
+            location.reload();
           },
           function(xhr, status, error) {
             console.log(error);
