@@ -10,6 +10,7 @@ use Facebook\FacebookRedirectLoginHelper;
 use Facebook\FacebookRequest;
 use Facebook\FacebookResponse;
 use Facebook\FacebookSDKException;
+use Facebook\FacebookServerException;
 use Facebook\FacebookRequestException;
 use Facebook\FacebookAuthorizationException;
 use Facebook\GraphObject;
@@ -78,6 +79,9 @@ $app->post('/api/create', function() use ($app) {
         $response = $request->execute();
         $event->save();
     } catch (ParseException $ex) {
+        echo json_encode(array('ok' => false, 'error' => $ex->getMessage()));
+        return;
+    } catch (FacebookServerException $ex) {
         echo json_encode(array('ok' => false, 'error' => $ex->getMessage()));
         return;
     }
