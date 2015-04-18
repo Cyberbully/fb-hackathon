@@ -18,7 +18,8 @@ header('Access-Control-Allow-Origin: http://localhost:8000');
 $app = new \Slim\Slim();
 
 $app->get('/api/hello/:name', function ($name) {
-    echo 'Hello, $name, my name is Wayne Wobcke';
+    echo "<pre>Hello, $name, my name is Wayne Wobcke</pre>";
+    echo '<img src="http://www.cse.unsw.edu.au/~wobcke/wobcke.jpeg">';
 });
 
 $app->post('/api/create', function() use ($app) {
