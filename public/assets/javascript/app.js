@@ -232,8 +232,8 @@ var Pick = React.createClass({displayName: "Pick",
     console.log('start_date: ' + data.event.start_date);
     console.log('start date thru moment.unix: ' + start.format("YYYY MM DD HH"));
     var table = {
-      start_hour: start_time,
-      hours: 8,
+      start_hour: start_time.get('hour'),
+      hours: data.event.end_time,
       start_day: start,
       entries: data.event.entries,
       days: parseInt(data.event.days)
