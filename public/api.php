@@ -37,7 +37,12 @@ $app->post('/api/create', function() use ($app) {
         echo json_encode(array('ok' => false, 'error' => "Event already exists!"));
         return;
     }
-     
+
+    if (!isset($data['event_id']) || !isset($data['start_time']) || !isset($data['end_time']) || !isset($data['frequency'])) {
+        echo json_encode(array('ok' => false, 'error' => "Missing fields."));
+        return;
+    }  
+
     $event = new ParseObject('Event');
     $event->set('event_id', $data['event_id']);
     $event->set('start_time', $data['start_time']);
