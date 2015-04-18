@@ -26,13 +26,12 @@
     <script src="assets/javascript/bootstrap-datetimepicker.min.js"></script>
     <script type="text/javascript">
       $(function () {
-
-$('#startTimePicker').datetimepicker({
+          $('#startTimePicker').datetimepicker({
             defaultDate: new Date(),
             format: 'DD/MM/YYYY'
           });
         });
- var isMouseDown = false;
+      var isMouseDown = false;
       var isSelected;
       $('body').on('mousedown', "#timePicker td", function(event) {
         isSelected = $(this).hasClass("highlighted");
@@ -50,8 +49,6 @@ $('#startTimePicker').datetimepicker({
       }).on('mouseup', '#timePicker td', function(event) {
         isMouseDown = false;
       });
-
-
     </script>
   </body>
 </html>
