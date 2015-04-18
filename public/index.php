@@ -15,7 +15,11 @@ use Facebook\GraphObject;
 session_start();
 
 // login helper with redirect_uri
-$helper = new FacebookRedirectLoginHelper($GLOBALS["LOGIN_URL"] . "?" . $_SERVER["QUERY_STRING"]);
+$loginUrl = $GLOBALS["LOGIN_URL"];
+if (isset($_GET["event"])) {
+    $loginUrl = $GLOBALS["EVENT_BASE_URL"] . $_GET["event"];
+}
+$helper = new FacebookRedirectLoginHelper($loginUrl);
 
 $session = getSession();
 if (!$session) {
@@ -27,18 +31,21 @@ if (!$session) {
 
     if ($session) {
         $_SESSION["fb-auth"] = $session->getToken();
-        header("Location: /#");
+        if (isset($_GET["event"])) {
+            header("Location: /#/pick?event=" . $_GET["event"]);
+        } else {
+            header("Location: /#");
+        }
         exit();
     }
 }
 
-if (isset($_GET["event"])) {
-    header("Location: /#/pick?event=" . $_GET["event"]);
-    exit();
-}
-
 // see if we have a session
 if ($session) {
+    if (isset($_GET["event"])) {
+        header("Location: /#/pick?event=" . $_GET["event"]);
+        exit();
+    }
     include('index.html');
 } else {
     // show login url
