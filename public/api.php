@@ -65,17 +65,17 @@ $app->post('/api/create', function() use ($app) {
         'POST',
         '/' . $data['event_id'] . '/feed',
         array (
-            'message' => "Greetings, friends! Let's find the best time for our event",
-            'link' => $EVENT_BASE_URL . $data['event_id'],
+            'message' => "Greetings, friends! Let's find the best time for our event, indicate your preferred times here",
+            /*'link' => $EVENT_BASE_URL . $data['event_id'],
             'name' => 'Time for Hoh Won',
             'description' => 'Choose which times are best for you',
-            'picture' => 'http://a4.urbancdn.com/w/s/Ob/1PMs50OPsKTpK4.jpg',
+            'picture' => 'http://a4.urbancdn.com/w/s/Ob/1PMs50OPsKTpK4.jpg',*/
         )
     );
-    $response = $request->execute();
-    $graphObject = $response->getGraphObject();
+    //$graphObject = $response->getGraphObject();
 
     try {
+        $response = $request->execute();
         $event->save();
     } catch (ParseException $ex) {
         echo json_encode(array('ok' => false, 'error' => $ex->getMessage()));
@@ -208,6 +208,9 @@ $app->post('/api/event/:event_id/preference', function($event_id) use ($app) {
         
     $event->setAssociativeArray('times', $times);
     $event->setAssociativeArray('entries', $entries);
+
+    // determine best timeslots (TODO)
+    $best_times = array();
 
     try {
         $event->save();
