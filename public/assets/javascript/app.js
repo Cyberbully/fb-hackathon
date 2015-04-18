@@ -25,7 +25,7 @@ var Toolbar = React.createClass({displayName: "Toolbar",
               React.createElement("span", {className: "icon-bar"}), 
               React.createElement("span", {className: "icon-bar"})
             ), 
-            React.createElement("a", {href: "", className: "navbar-brand"}, "Time for Hoh Won")
+            React.createElement("a", {href: "#", className: "navbar-brand"}, "Time for Hoh Won")
           ), 
           React.createElement("div", {id: "navbar", className: "navbar-collapse collapse"}, 
             React.createElement("ul", {className: "nav navbar-nav"}, 
