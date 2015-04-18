@@ -15,7 +15,7 @@ use Facebook\GraphObject;
 session_start();
 
 // login helper with redirect_uri
-$helper = new FacebookRedirectLoginHelper('http://fb.jcaw.me/fb/public/index.php');
+$helper = new FacebookRedirectLoginHelper('http://localhost/public/index.php');
 
 try {
   $session = $helper->getSessionFromRedirect();
