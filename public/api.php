@@ -47,15 +47,15 @@ $app->post('/api/create', function() use ($app) {
         return;
     }
 
-    if (!isset($data['event_id']) || !isset($data['start_time']) || !isset($data['end_time']) || !isset($data['frequency'])) {
+    if (!isset($data['event_id']) || !isset($data['start_date']) || !isset($data['days']) || !isset($data['frequency'])) {
         echo json_encode(array('ok' => false, 'error' => "Missing fields."));
         return;
     }  
 
     $event = new ParseObject('Event');
     $event->set('event_id', $data['event_id']);
-    $event->set('start_time', $data['start_time']);
-    $event->set('end_time', $data['end_time']);
+    $event->set('start_date', $data['start_date']);
+    $event->set('days', $data['days']);
     $event->set('frequency', $data['frequency']);
     $event->setAssociativeArray('times', []);
     $event->setAssociativeArray('entries', []);
@@ -101,8 +101,8 @@ $app->get('/api/event/:event_id', function($event_id) {
 
     echo json_encode(array('ok' => true, 'event' => array(
         'event_id' => $event->get('event_id'),
-        'start_time' => $event->get('start_time'),
-        'end_time' => $event->get('end_time'),
+        'start_date' => $event->get('start_date'),
+        'days' => $event->get('days'),
         'frequency' => $event->get('frequency'),
         'times' => $event->get('times'),
         'entries' => $event->get('entries'),
@@ -135,14 +135,18 @@ $app->get('/api/details', function() {
         $request = new FacebookRequest(
             $session,
             'GET',
-            '/' . $facebookUser->getProperty('id') . '/events'
+            '/' . $facebookUser->getProperty('id') . '/events?fields=owner,id,name'
         );
         $response = $request->execute();
         $events = $response->getResponse();
 
         $event_array = [];
         foreach ($events->data as $event) {
-            array_push($event_array, array("id" => $event->id, "name" => $event->name));
+            $query = new ParseQuery('Event');
+            $query->equalTo('event_id', $event->id);
+            if ($event->owner->id == $facebookUser->getProperty('id') && !$query->count()) {
+                array_push($event_array, array("id" => $event->id, "name" => $event->name));
+            }
         }
     } catch (FacebookRequestException $ex) {
         echo json_encode(array('ok' => false, 'error' => $ex->getMessage()));
@@ -175,10 +179,11 @@ $app->post('/api/event/:event_id/preference', function($event_id) use ($app) {
     try {
         $query->equalTo("event_id", $event_id);
         $event = $query->first();
-    } catch (ParseException $ex) {
+    } catch (Exception $ex) {
         echo json_encode(array('ok' => false, 'error' => $ex->getMessage()));
         return;
     }
+
     try {
         $request = new FacebookRequest($session, 'GET', '/me');
         $response = $request->execute();
