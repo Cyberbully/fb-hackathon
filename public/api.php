@@ -225,7 +225,7 @@ $app->post('/api/event/:event_id/preference', function($event_id) use ($app) {
 
     // determine best timeslots (TODO)
     $best_times = array_keys($times);
-    usort($best_times, function ($a, $b) {
+    usort($best_times, function ($a, $b) use ($times) {
         if ($times[$a] == $times[$b]) {
             if ($a == $b) {
                 return 0;
@@ -290,6 +290,31 @@ $app->post('/api/event/:event_id/preference', function($event_id) use ($app) {
     );
 
     try {
+        // TODO: pagination
+        $request = new FacebookRequest(
+            $session,
+            'GET',
+            '/' . $facebookUser->getProperty('id') . '/events?fields=rsvp_status'
+        );
+        $response = $request->execute();
+        $events = $response->getResponse();
+        $rsvp = "invited";
+        foreach ($events->data as $event_) {
+            if ($event_->id == $event_id) {
+                $rsvp = $event_->rsvp_status;
+            }
+        }
+
+        if ($rsvp == "invited") {
+            $requestMaybe = new FacebookRequest(
+                $session,
+                'POST',
+                '/'. $event_id .'/maybe'
+            );
+            $responseMaybe = $requestMaybe->execute();
+            $graphObject = $responseMaybe->getGraphObject();
+        }
+
         $response = $request->execute();
         $event->save();
     } catch (ParseException $ex) {
