@@ -4,9 +4,6 @@ var Link = Router.Link;
 var Route = Router.Route;
 var RouteHandler = Router.RouteHandler;
 
-
-
-
 var Toolbar = React.createClass({displayName: "Toolbar",
   render: function() {
     return (
@@ -23,18 +20,19 @@ var Toolbar = React.createClass({displayName: "Toolbar",
           ), 
           React.createElement("div", {id: "navbar", className: "navbar-collapse collapse"}, 
             React.createElement("ul", {className: "nav navbar-nav"}, 
-              React.createElement("li", null, React.createElement(Link, {to: "app"}, "Time for Hoh Wan"))
+              React.createElement("li", null, React.createElement(Link, {to: "app"}, "Time for Hoh Won"))
             ), 
 
             React.createElement("ul", {className: "nav navbar-nav navbar-right"}, 
-								  React.createElement("li", null, React.createElement("a", {href: ""}, React.createElement("img", {src: this.props.user.profile}), " ", this.props.user.name))
-							)
+			    React.createElement("li", null, React.createElement("a", {href: ""}, React.createElement("img", {src: this.props.user.profile}), " ", this.props.user.name))
+			)
           )
         )
       )
     );
   }
 });
+
 
 var Messages = React.createClass({displayName: "Messages",
   render: function() {
@@ -105,6 +103,7 @@ function ajaxDo(method, endpoint, data, success, error) {
   });
 }
 
+
 var NewEventForm = React.createClass({displayName: "NewEventForm",
   contextTypes: {
     router: React.PropTypes.func
@@ -113,25 +112,30 @@ var NewEventForm = React.createClass({displayName: "NewEventForm",
 
     var startDate = $('#startTimePicker').data("DateTimePicker").date();
     var endDate = $('#days').val();
-    if(!startDate || !endDate) {
-      alert("Pleas enter a time for the start and the end");
+    var startTime = $('#beginTimePicker').data("DateTimePicker").date();
+
+    if (!startDate || !endDate) {
+      alert("Please enter a time for the start and the end");
       return false;
     }
 
     var data = {
       event_id: $('#event').val().toString(),
       start_date: moment(startDate).unix().toString(),
+      start_time: moment(startTime).unix().toString(),
+      end_time: $('#hours').val().toString(),
       days: $('#days').val(),
       frequency: "60"
     }
     var self = this;
-   ajaxDo('POST', '/create', JSON.stringify(data),
-    function(data) {
-        self.context.router.transitionTo('/pick?event='+data.event_id)
-      },
-      function(xhr, status, err) {
-        console.error(status, err);
-      }
+    ajaxDo('POST', '/create', JSON.stringify(data),
+        function(data) {
+            alert("Done!");
+            self.context.router.transitionTo('/pick?event='+data.event_id)
+        },
+        function(xhr, status, err) {
+            console.error(status, err);
+        }
     );
   },
   render: function () {
@@ -178,6 +182,29 @@ var NewEventForm = React.createClass({displayName: "NewEventForm",
                     )
                   )
                 ), 
+                
+                React.createElement("div", {className: "row"}, 
+                  React.createElement("div", {className: "col-md-6 col-sm-12"}, 
+                    React.createElement("div", {className: "form-group"}, 
+                      React.createElement("label", {htmlFor: "beginTime"}, "Start Time"), 
+                      React.createElement("div", {className: "input-group date", id: "beginTimePicker"}, 
+                        React.createElement("input", {type: "text", id: "beginTime", className: "form-control"}), 
+                        React.createElement("span", {className: "input-group-addon"}, 
+                          React.createElement("span", {className: "glyphicon glyphicon-calendar"})
+                        )
+
+                      )
+                    )
+                  ), 
+
+                  React.createElement("div", {className: "col-md-6 col-sm-12"}, 
+                    React.createElement("div", {className: "form-group"}, 
+                      React.createElement("label", {htmlFor: "hours"}, "Hours"), 
+                      React.createElement("input", {type: "number", id: "hours", className: "form-control", defaultValue: "8"})
+                    )
+                  )
+                ), 
+
                 React.createElement("div", {className: "row"}, 
                   React.createElement("div", {className: "col-sm-12"}, 
                   React.createElement("button", {className: "btn btn-primary pull-right", type: "button", onClick: this.onClick}, "Create Event")
@@ -199,8 +226,8 @@ var Pick = React.createClass({displayName: "Pick",
     var data = this.state.data;
     var start = moment.unix(data.event.start_date);
     var table = {
-      start_hour: 9,
-      hours: 8,
+      start_hour: moment.unix(data.event.start_time).get('hour'),
+      hours: parseInt(data.event.end_time),
       start_day: start,
       entries: data.event.entries,
       name: data.event.name,
@@ -291,7 +318,7 @@ var EventPickTable = React.createClass({displayName: "EventPickTable",
     },
     render: function() {
       var rows = [];
-      for (var i=0;i<=this.props.table.hours;i++) {
+      for (var i=0;i<this.props.table.hours;i++) {
         rows.push(React.createElement(EventPickRow, {ref: 'row' + i, row_index: i, key: i, table: this.props.table, user: this.props.user}))
       }
 
@@ -366,7 +393,21 @@ var EventPickCell = React.createClass({displayName: "EventPickCell",
         highlighted = 'highlighted';
       }
     }
-    return React.createElement("td", {className: highlighted, id: 'cell' + this.props.row_index + 'x' + this.props.index}, this.props.row_index + this.props.table.start_hour, React.createElement(ColorSquare, {time: thistime, id_to_name: this.props.table.id_to_name, entries: this.props.table.entries}))
+
+    var hour = this.props.row_index + this.props.table.start_hour;
+    var hour_str;
+    if (hour < 12) {
+        if (hour == 0) {
+            hour = 12;
+        }
+        hour_str = hour + 'am';
+    } else {
+        if (hour > 12) {
+            hour -= 12;
+        }
+        hour_str = hour + 'pm';
+    }
+  return React.createElement("td", {className: highlighted, id: 'cell' + this.props.row_index + 'x' + this.props.index}, hour_str, React.createElement(ColorSquare, {time: thistime, id_to_name: this.props.table.id_to_name, entries: this.props.table.entries}))
     }
 });
 

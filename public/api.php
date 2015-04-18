@@ -47,7 +47,7 @@ $app->post('/api/create', function() use ($app) {
         return;
     }
 
-    if (!isset($data['event_id']) || !isset($data['start_date']) || !isset($data['days']) || !isset($data['frequency'])) {
+    if (!isset($data['event_id']) || !isset($data['start_date']) || !isset($data['days']) || !isset($data['frequency']) || !isset($data['start_time']) || !isset($data['end_time'])) {
         echo json_encode(array('ok' => false, 'error' => "Missing fields."));
         return;
     }  
@@ -57,6 +57,8 @@ $app->post('/api/create', function() use ($app) {
     $event->set('start_date', $data['start_date']);
     $event->set('days', $data['days']);
     $event->set('frequency', $data['frequency']);
+    $event->set('start_time', $data['start_time']);
+    $event->set('end_time', $data['end_time']);
     $event->setAssociativeArray('times', []);
     $event->setAssociativeArray('entries', []);
 
@@ -90,6 +92,15 @@ $app->post('/api/create', function() use ($app) {
 });
 
 $app->get('/api/event/:event_id', function($event_id) {
+    session_start();
+    $session = getSession();
+
+    if (!$session) {        
+        echo json_encode(array('ok' => false, 'error' => "Not logged in!"));
+        return;
+    }
+
+
     $query = new ParseQuery('Event');
     try {
         $query->equalTo("event_id", $event_id);
@@ -99,13 +110,49 @@ $app->get('/api/event/:event_id', function($event_id) {
         return;
     }
 
+    $id_to_name = array();
+    // graph api request for user data
+    try {
+        $request = new FacebookRequest(
+            $session,
+            'GET',
+            '/' . $event->get('event_id') . '?fields=id,name,owner,cover,place' 
+        );
+        $response = $request->execute();
+        $event_data = $response->getResponse();
+
+        foreach (array("invited") as $endpoint) {
+            $request = new FacebookRequest(
+                $session, 'GET', '/' . $event->get('event_id') . '/' . $endpoint
+            );
+            $response = $request->execute();
+            $attendees = $response->getResponse();
+            foreach ($attendees->data as $attendee) {
+                $id_to_name[$attendee->id] = $attendee->name;
+            }
+        } 
+    } catch (FacebookRequestException $ex) {
+        echo json_encode(array('ok' => false, 'error' => $ex->getMessage()));
+        return;
+    } catch (Exception $ex) {
+        echo json_encode(array('ok' => false, 'error' => $ex->getMessage()));
+        return;
+    }
+
     echo json_encode(array('ok' => true, 'event' => array(
         'event_id' => $event->get('event_id'),
+        'name' => $event_data->name,
+        'location' => isset($event_data->place) ? $event_data->place : "",
+        'owner' => $event_data->owner->name,
         'start_date' => $event->get('start_date'),
+        'cover' => isset($event_data->cover) ? $event_data->cover->source: "",
         'days' => $event->get('days'),
+        'start_time' => $event->get('start_time'),
+        'end_time' => $event->get('end_time'),
         'frequency' => $event->get('frequency'),
         'times' => $event->get('times'),
         'entries' => $event->get('entries'),
+        'id_to_name' => $id_to_name
     ))); 
 });
 
@@ -232,7 +279,7 @@ $app->post('/api/event/:event_id/preference', function($event_id) use ($app) {
             }
             return ($a < $b) ? -1 : 1;
         }
-        return ($times[$a] < $times[$b]) ? -1 : 1;
+        return ($times[$a] < $times[$b]) ? 1 : -1;
     });
 
     $people_count = count($entries);

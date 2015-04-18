@@ -4,9 +4,6 @@ var Link = Router.Link;
 var Route = Router.Route;
 var RouteHandler = Router.RouteHandler;
 
-
-
-
 var Toolbar = React.createClass({
   render: function() {
     return (
@@ -23,18 +20,19 @@ var Toolbar = React.createClass({
           </div>
           <div id="navbar" className="navbar-collapse collapse">
             <ul className="nav navbar-nav">
-              <li><Link to="app">Time for Hoh Wan</Link></li>
+              <li><Link to="app">Time for Hoh Won</Link></li>
             </ul>
 
             <ul className="nav navbar-nav navbar-right">
-								  <li><a href=""><img src={this.props.user.profile} /> {this.props.user.name}</a></li>
-							</ul>
+			    <li><a href=""><img src={this.props.user.profile} /> {this.props.user.name}</a></li>
+			</ul>
           </div>
         </div>
       </div>
     );
   }
 });
+
 
 var Messages = React.createClass({
   render: function() {
@@ -105,6 +103,7 @@ function ajaxDo(method, endpoint, data, success, error) {
   });
 }
 
+
 var NewEventForm = React.createClass({
   contextTypes: {
     router: React.PropTypes.func
@@ -113,25 +112,30 @@ var NewEventForm = React.createClass({
 
     var startDate = $('#startTimePicker').data("DateTimePicker").date();
     var endDate = $('#days').val();
-    if(!startDate || !endDate) {
-      alert("Pleas enter a time for the start and the end");
+    var startTime = $('#beginTimePicker').data("DateTimePicker").date();
+
+    if (!startDate || !endDate) {
+      alert("Please enter a time for the start and the end");
       return false;
     }
 
     var data = {
       event_id: $('#event').val().toString(),
       start_date: moment(startDate).unix().toString(),
+      start_time: moment(startTime).unix().toString(),
+      end_time: $('#hours').val().toString(),
       days: $('#days').val(),
       frequency: "60"
     }
     var self = this;
-   ajaxDo('POST', '/create', JSON.stringify(data),
-    function(data) {
-        self.context.router.transitionTo('/pick?event='+data.event_id)
-      },
-      function(xhr, status, err) {
-        console.error(status, err);
-      }
+    ajaxDo('POST', '/create', JSON.stringify(data),
+        function(data) {
+            alert("Done!");
+            self.context.router.transitionTo('/pick?event='+data.event_id)
+        },
+        function(xhr, status, err) {
+            console.error(status, err);
+        }
     );
   },
   render: function () {
@@ -178,6 +182,29 @@ var NewEventForm = React.createClass({
                     </div>
                   </div>
                 </div>
+                
+                <div className="row">
+                  <div className='col-md-6 col-sm-12'>
+                    <div className="form-group">
+                      <label htmlFor="beginTime">Start Time</label>
+                      <div className='input-group date' id='beginTimePicker'>
+                        <input type='text' id="beginTime" className="form-control" />
+                        <span className="input-group-addon">
+                          <span className="glyphicon glyphicon-calendar"></span>
+                        </span>
+
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className='col-md-6 col-sm-12'>
+                    <div className="form-group">
+                      <label htmlFor="hours">Hours</label>
+                      <input type='number' id="hours" className="form-control" defaultValue="8" />
+                    </div>
+                  </div>
+                </div>
+
                 <div className="row">
                   <div className="col-sm-12">
                   <button className="btn btn-primary pull-right" type="button" onClick={this.onClick}>Create Event</button>
@@ -199,8 +226,8 @@ var Pick = React.createClass({
     var data = this.state.data;
     var start = moment.unix(data.event.start_date);
     var table = {
-      start_hour: 9,
-      hours: 8,
+      start_hour: moment.unix(data.event.start_time).get('hour'),
+      hours: parseInt(data.event.end_time),
       start_day: start,
       entries: data.event.entries,
       name: data.event.name,
@@ -291,7 +318,7 @@ var EventPickTable = React.createClass({
     },
     render: function() {
       var rows = [];
-      for (var i=0;i<=this.props.table.hours;i++) {
+      for (var i=0;i<this.props.table.hours;i++) {
         rows.push(<EventPickRow ref={'row' + i} row_index={i} key={i} table={this.props.table} user={this.props.user}/>)
       }
 
@@ -366,7 +393,21 @@ var EventPickCell = React.createClass({
         highlighted = 'highlighted';
       }
     }
-    return <td className={highlighted}  id={'cell' + this.props.row_index + 'x' + this.props.index}>{this.props.row_index + this.props.table.start_hour}<ColorSquare time={thistime} id_to_name={this.props.table.id_to_name} entries={this.props.table.entries} /></td>
+
+    var hour = this.props.row_index + this.props.table.start_hour;
+    var hour_str;
+    if (hour < 12) {
+        if (hour == 0) {
+            hour = 12;
+        }
+        hour_str = hour + 'am';
+    } else {
+        if (hour > 12) {
+            hour -= 12;
+        }
+        hour_str = hour + 'pm';
+    }
+  return <td className={highlighted} id={'cell' + this.props.row_index + 'x' + this.props.index}>{hour_str}<ColorSquare time={thistime} id_to_name={this.props.table.id_to_name} entries={this.props.table.entries} /></td>
     }
 });
 
