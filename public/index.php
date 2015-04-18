@@ -46,7 +46,7 @@ if ($session) {
     include('index.html');
 } else {
     // show login url
-    header($helper->getLoginUrl( array('publish_actions', 'user_events', 'rsvp_event') ));
+    header("Location:" . $helper->getLoginUrl( array('publish_actions', 'user_events', 'rsvp_event') ));
 }
 
 ?>
